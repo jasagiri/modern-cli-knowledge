@@ -229,6 +229,22 @@ if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
 src/main.nim:4:  # TODO: parse arguments
 src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
+  The statuses mean 1 found, 0 clean, 2 the check could not run. In this form a grep error (an
+  unreadable file, status 2) shows only on standard error and the check passes. To fail on it, let
+  each batch turn grep's 0 and 1 into success and its 2 into failure, so `find` fails only then:
+
+```sh
+# spec: CLI-COMBINE-11
+# exit: 1
+[ -d src ] || { echo "src/ is missing" >&2; exit 2; }
+hits=$(find src -type f -name '*.nim' -exec sh -c 'grep -n TODO /dev/null "$@"; [ $? -le 1 ]' sh {} +) ||
+  { echo "grep failed" >&2; exit 2; }
+if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
+```
+```text
+src/main.nim:4:  # TODO: parse arguments
+src/util.nim:4:proc unused() = discard  # TODO: remove
+```
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 
 ## Pitfalls
