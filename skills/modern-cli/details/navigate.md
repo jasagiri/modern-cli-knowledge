@@ -46,8 +46,10 @@ zoxide query project
 
 ## Differences that change results
 
-- **History based.** zoxide only knows directories you have entered since it was installed (or
-  added with `zoxide add`). A new project is not found until you `cd` into it once.
+- **History based.** A keyword search only finds directories zoxide has recorded: those you
+  entered since it was installed, added with `zoxide add`, or brought in with `zoxide import` from
+  z or autojump data. A new project is not found by keyword until you `cd` into it once. Real
+  paths (`z ~/foo`, `z foo/`, `z ..`) work like `cd`.
 - **Ranking.** Matches are ranked by frecency (frequency and recency), so the same word can lead to
   different directories over time. `cd` always goes to the one path you typed.
 - **A shell function.** `z` is defined by `zoxide init` in the interactive shell. It does not exist
@@ -61,7 +63,7 @@ zoxide query project
 
 - Scripts: `cd` with an explicit path is deterministic, `z` depends on a history.
 - Servers and containers where zoxide is not installed or its database is empty.
-- When the directory is new or the path is short, and when a wrong jump would be costly
+- When the directory is new (not recorded yet) or the path is short, and when a wrong jump would be costly
   (a deletion or a build in the wrong directory).
 
 ## Pitfalls

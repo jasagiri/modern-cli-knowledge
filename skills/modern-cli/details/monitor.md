@@ -17,17 +17,19 @@ sort, send a signal) with the keyboard.
 
 ## Commands
 
-Start the monitor. It takes over the terminal until you quit it (`q` or Esc, then confirm):
+Start the monitor. It takes over the terminal until you quit it (`q` quits at once; Esc opens the main menu, which has a Quit entry):
 
 ```sh unverified
 btop
 ```
 
-Start with a low-colour terminal setting, for terminals that cannot show the default theme (see
-`btop --help` for the options of the installed version):
+Start with true colour disabled (`-l`, `--low-color`: 256 colours only), or in the mode for
+terminals with only 16 colours (`-t`, `--tty`); see `btop --help` for the options of the installed
+version:
 
 ```sh unverified
 btop --low-color
+btop --tty
 ```
 
 ## Differences that change results
@@ -44,8 +46,7 @@ btop --low-color
 
 ## When to keep the classic command
 
-- Scripts, logs and one-shot snapshots: `top -l 1` (BSD) or `top -b -n 1` (GNU) print once and
-  exit; `ps` gives a parseable table.
+- Scripts, logs and one-shot snapshots: `top -l 2` (BSD) or `top -b -n 1` (GNU) print and exit; `ps` gives a parseable table.
 - Servers, containers and rescue shells where btop is not installed.
 - Narrow or slow terminals (a serial console) where a full-screen interface is not usable.
 
@@ -55,8 +56,12 @@ btop needs a terminal. Started without one (cron, CI, a pipe), it cannot draw it
 a snapshot in a script, use a command that prints and exits:
 
 ```sh unverified
-top -l 1 -n 5
+top -l 2 -n 5
+top -b -n 1 | head -n 12
 ```
+
+The first line is for BSD and macOS (`-l` is BSD only; the CPU figures of the first sample are not
+meaningful, so take the second with `-l 2`). The second is for GNU `top`.
 
 ## Sources
 

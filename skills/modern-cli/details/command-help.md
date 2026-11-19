@@ -13,7 +13,7 @@ manual.
 |---|---|
 | `man tar` | `tldr tar` |
 | `tar --help` | `tldr tar` |
-| `man -k keyword` | `tldr --list` (all pages) |
+| `man -k keyword` | no equivalent: `tldr --list` lists all pages of the platform, it does not search; keep `man -k` or `apropos` |
 
 ## Commands
 

@@ -36,21 +36,25 @@ Show only local disks (the groups are `local`, `network`, `fuse`, `special`, `lo
 duf -only local
 ```
 
-Print machine-readable JSON, for a script:
+Print machine-readable JSON, for a script. `-json` ignores `-only` and path arguments and prints
+every device, so filter the result with `jq`:
 
 ```sh unverified
-duf -json
+duf -json | jq -r '.[] | select(.device_type == "local") | .mount_point'
 ```
 
 ## Differences that change results
 
-- **Hides special filesystems by default.** `df` lists everything it is given; duf hides pseudo
-  and special filesystems unless `-all` is passed, so a mount that `df` shows may be missing.
+- **Default selection.** duf shows local, network, fuse and special groups (such as devfs) by
+  default. `-all` also includes pseudo, duplicate and inaccessible filesystems, so a mount that
+  `df` shows may be missing without it.
 - **Grouped output.** The table is split into groups with one heading each; there is no single
-  list to cut with `awk '{print $5}'`. For scripts use `-json` or `-output` to pick columns.
+  list to cut with `awk '{print $5}'`. For scripts use `-json` (all devices, filter with `jq`) or
+  `-output` to pick columns.
 - **Sizes.** duf shows human-readable sizes; `df` shows 512-byte blocks on BSD unless `-h` or `-k`.
 - **Flags.** duf takes Go-style single-dash flags (`-only`, `-json`); `df` uses POSIX options
-  (`-h`, `-k`, `-i`).
+  (`-h`, `-k`, `-i`). Flags must come before the paths: `duf -json /tmp` works, `duf /tmp -json`
+  fails because `-json` is read as a path.
 - **Platform.** BSD and GNU `df` differ in columns and flags (`df -T` is GNU only); duf prints the
   same table on both.
 
@@ -58,15 +62,14 @@ duf -json
 
 - POSIX scripts, containers and servers without duf: `df -P` has a specified format.
 - When a script parses the output: `df -Pk` gives one line per filesystem in 1024-byte blocks.
-- When the hidden special filesystems are what you are asking about, unless `-all` is used.
 
 ## Pitfalls
 
-duf hides some filesystems by default, so "it is not listed" does not mean "it is not mounted".
-Ask for everything before concluding:
+Options placed after a path are read as paths, so the command fails with an `lstat` error and
+the option has no effect. Put the flags first:
 
 ```sh unverified
-duf -all
+duf -only local /home
 ```
 
 ## Sources
