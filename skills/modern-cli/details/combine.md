@@ -153,6 +153,19 @@ find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} + | LC_ALL=C sort
 src/main.nim:4:  # TODO: parse arguments
 src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
+  In a script, branch on the output, not on the status: `find` exits non-zero when any `-exec ... +`
+  batch does, and grep exits 1 for "no match", so the status cannot tell "no match" from "grep
+  failed". A CI check that fails when it finds something:
+
+```sh
+# exit: 1
+hits=$(find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} +)
+if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
+```
+```text
+src/main.nim:4:  # TODO: parse arguments
+src/util.nim:4:proc unused() = discard  # TODO: remove
+```
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 
 ## Pitfalls
