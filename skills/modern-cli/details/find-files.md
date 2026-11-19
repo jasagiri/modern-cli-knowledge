@@ -27,6 +27,7 @@ go through `sort`:
 find . -type f -not -path './.git/*' -not -path './build/*' -not -path './.hidden/*' -not -name '.*' -not -name '*.log' | sed 's|^\./||' | sort
 ```
 ```sh
+# spec: CLI-FD-01
 fd -t f . | sort
 ```
 ```text
@@ -50,6 +51,7 @@ Everything, ignored and hidden files included (`-H` hidden, `-I` ignored), which
 find . -type f | sed 's|^\./||' | sort
 ```
 ```sh
+# spec: CLI-FD-01
 fd -t f -H -I . | sort
 ```
 ```text
@@ -74,6 +76,7 @@ src/util.nim
 By extension, and by glob on the name (`-g`):
 
 ```sh
+# spec: CLI-FD-02
 fd -e nim | sort && fd -g 'main.*'
 ```
 ```text
@@ -86,6 +89,7 @@ A bare pattern is a case-insensitive regex searched in the file name only; `-s` 
 case-sensitive and `-p` matches the whole path instead of the name:
 
 ```sh
+# spec: CLI-FD-08
 fd todo && fd -p 'notes/.*\.txt$' | sort
 ```
 ```text
@@ -98,6 +102,7 @@ notes/日本語.txt
 Directories, with a trailing slash, limited in depth, and with an exclusion (`-E` glob):
 
 ```sh
+# spec: CLI-FD-04 CLI-FD-06
 fd -t d | sort && fd -t f -d 1 . src | sort && fd -t f -E '*.py' . src | sort
 ```
 ```text
@@ -125,6 +130,7 @@ util.nim
 With `-x` the substituted path keeps the `./` prefix, unlike plain output:
 
 ```sh
+# spec: CLI-FD-04
 fd -e nim -x echo {} | sort
 ```
 ```text
@@ -132,9 +138,40 @@ fd -e nim -x echo {} | sort
 ./src/util.nim
 ```
 
+Smart case: a pattern without an uppercase letter ignores case, and `-s` always respects it. An
+invalid regex is an error with status 1 (fd names the literal and glob options):
+
+```sh
+# spec: CLI-FD-02 CLI-FD-07
+fd readme
+fd -s readme
+fd '(' 2>/dev/null; echo "status: $?"
+```
+```text
+README.md
+status: 1
+```
+
+Symlinks are listed but not followed unless `-L` is given:
+
+```sh
+# spec: CLI-FD-05 CLI-FD-09
+mkdir tl && ln -s ../src tl/s
+fd . tl
+fd -L . tl | sort
+```
+```text
+tl/s
+tl/s/
+tl/s/legacy.py
+tl/s/main.nim
+tl/s/util.nim
+```
+
 No match is not an error: fd exits 0 and prints nothing, as `find` does, where `grep` exits 1.
 
 ```sh
+# spec: CLI-FD-07
 fd NOPE
 ```
 ```text

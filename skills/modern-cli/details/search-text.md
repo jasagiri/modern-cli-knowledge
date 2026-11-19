@@ -23,6 +23,7 @@ to spell out what rg skips by itself (the `.gitignore` entries, hidden directori
 grep -rlI --exclude-dir=build --exclude-dir=.hidden --exclude-dir=.git --exclude='*.log' TODO . | sed 's|^\./||' | sort
 ```
 ```sh
+# spec: CLI-RG-01
 rg -l --sort path TODO
 ```
 ```text
@@ -38,6 +39,7 @@ src/util.nim
 Search everything, ignored, hidden and binary files included (`-uuu`):
 
 ```sh
+# spec: CLI-RG-01 CLI-RG-02 CLI-RG-03
 rg -l -uuu --sort path TODO
 ```
 ```text
@@ -58,6 +60,7 @@ src/util.nim
 not merge them. With `src` before `notes`, every `src/` line comes first:
 
 ```sh
+# spec: CLI-RG-06
 rg -n --sort path TODO src notes
 ```
 ```text
@@ -74,6 +77,7 @@ For one order across several paths, give no `--sort` and sort the whole output b
 number:
 
 ```sh
+# spec: CLI-RG-06
 rg -H -n TODO src notes | LC_ALL=C sort -t: -k1,1 -k2,2n
 ```
 ```text
@@ -112,6 +116,7 @@ When the output is not a terminal (a pipe, a file, a script), rg prints no line 
 single file no file name either:
 
 ```sh
+# spec: CLI-RG-05
 rg TODO src/main.nim
 ```
 ```text
@@ -124,15 +129,58 @@ Ask for them explicitly when another program reads the output; then rg and grep 
 grep -Hn TODO src/main.nim
 ```
 ```sh
+# spec: CLI-RG-05
 rg -H -n TODO src/main.nim
 ```
 ```text
 src/main.nim:4:  # TODO: parse arguments
 ```
 
+Paths: `grep -r` prints the `./` prefix of the path it was given, rg does not:
+
+```sh
+# spec: CLI-RG-04
+grep -rl TODO . --include=todo.txt
+rg -l TODO -g todo.txt
+```
+```text
+./notes/todo.txt
+notes/todo.txt
+```
+
+Standard input: when it is a pipe or a file, rg searches it and not the directory. When it is neither
+(here `/dev/null`) rg searches the current directory, so the path is still best written:
+
+```sh
+# spec: CLI-RG-08
+rg TODO < notes/todo.txt
+echo "TODO from a pipe" | rg TODO
+rg -l TODO | wc -l | tr -d ' '
+```
+```text
+TODO: buy milk
+TODO: fix the parser
+TODO from a pipe
+7
+```
+
+`(` opens a group in rg's regex, which makes `rg 'greet('` an error with status 2; BSD `grep` (basic
+regex) takes `(` literally:
+
+```sh
+# spec: CLI-RG-07 CLI-RG-09
+rg 'greet(' src/main.nim > /dev/null 2>&1; echo "rg status: $?"
+grep -c 'greet(' src/main.nim
+```
+```text
+rg status: 2
+1
+```
+
 No match is not an error to hide: rg exits 1, as grep does, and 2 on a real error.
 
 ```sh
+# spec: CLI-RG-09
 # exit: 1
 rg NOPE
 ```
@@ -179,6 +227,7 @@ rg NOPE
 rg 'greet(' src/main.nim
 ```
 ```sh
+# spec: CLI-RG-07
 rg -n -F 'greet(' src/main.nim
 ```
 ```text

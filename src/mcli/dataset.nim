@@ -16,9 +16,17 @@ const
     "from the classic commands; in portable scripts, CI and servers without them, keep the POSIX commands."
   pagesDir* = "skills/modern-cli/details/"
 
+func withoutSpecLines(text: string): string {.raises: [].} =
+  ## The `# spec:` header lines name claims of the spec table; they are not part of a command
+  ## that a record shows.
+  var kept: seq[string]
+  for l in text.splitLines:
+    if not l.startsWith("# spec:"): kept.add l
+  kept.join("\n")
+
 func sectionBody(page: Page; heading: string): string {.raises: [].} =
   for s in page.sections:
-    if s.heading == heading: return s.body.strip
+    if s.heading == heading: return withoutSpecLines(s.body.strip)
   ""
 
 func sourceIds(page: Page): seq[string] {.raises: [].} =
@@ -35,14 +43,8 @@ func proseBefore(lines: seq[string]; fenceLine: int): string {.raises: [].} =
   let l = lines[i].strip
   if l.startsWith("```") or l.startsWith("#"): "" else: l
 
-func withoutExitLine(body: string): string {.raises: [].} =
-  if body.startsWith("# exit:"):
-    let nl = body.find('\n')
-    if nl < 0: "" else: body[nl + 1 .. ^1]
-  else: body
-
 func answer(ex: Example): string {.raises: [].} =
-  result = "```sh\n" & withoutExitLine(ex.command.body) & "```\n\nOutput:\n```text\n" & ex.expected & "```"
+  result = "```sh\n" & withoutHeader(ex.command.body) & "```\n\nOutput:\n```text\n" & ex.expected & "```"
   if ex.exitCode != 0: result.add "\n\nExit status: " & $ex.exitCode
 
 func tool(page: Page): string {.raises: [].} =
@@ -80,9 +82,9 @@ func recordsOf*(name, text: string): seq[Record] {.raises: [].} =
       inc nRewrite
       result.add Record(id: "rewrite:cli/" & topic & "#" & pad2(nRewrite), kind: "rewrite", topic: topic,
         instruction: "Rewrite this classic command with " & tool(page) & " so that it prints the same output.",
-        input: "```sh\n" & withoutExitLine(ex.classic.get.body) & "```",
+        input: "```sh\n" & withoutHeader(ex.classic.get.body) & "```",
         output: answer(ex) & "\n\nWhat differs by default:\n" & sectionBody(page, "Differences that change results"),
-        specIds: @["MCLI-EX-01", "MCLI-EX-03"], sources: sources,
+        specIds: @["MCLI-EX-01", "MCLI-EX-03"] & ex.specs, sources: sources,
         files: @[file & ":" & $ex.classic.get.line, at])
     elif isBad:
       inc nPitfall
@@ -90,14 +92,14 @@ func recordsOf*(name, text: string): seq[Record] {.raises: [].} =
       result.add Record(id: "pitfall:cli/" & topic & "#" & pad2(nPitfall), kind: "pitfall", topic: topic,
         instruction: "This command does not do what was meant. Fix it." & (if why.len > 0: " (" & why & ")" else: ""),
         input: "```sh\n" & blocks[prev].body & "```", output: answer(ex),
-        specIds: @["MCLI-EX-01"], sources: sources, files: @[file & ":" & $blocks[prev].line, at])
+        specIds: @["MCLI-EX-01"] & ex.specs, sources: sources, files: @[file & ":" & $blocks[prev].line, at])
     else:
       let what = proseBefore(lines, ex.command.line)
       if what.len == 0: continue
       inc nTask
       result.add Record(id: "task:cli/" & topic & "#" & pad2(nTask), kind: "task", topic: topic,
         instruction: what, input: "", output: answer(ex),
-        specIds: (if ex.idempotent: @["MCLI-EX-01", "MCLI-EX-04"] else: @["MCLI-EX-01"]),
+        specIds: (if ex.idempotent: @["MCLI-EX-01", "MCLI-EX-04"] else: @["MCLI-EX-01"]) & ex.specs,
         sources: sources, files: @[at])
 
 func toJson*(r: Record): JsonNode {.raises: [].} =

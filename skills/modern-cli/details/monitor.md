@@ -25,6 +25,7 @@ colours, `--filter` (`-f`) sets an initial process filter, `--preset` (`-p`) sta
 installed 1.4.8:
 
 ```sh
+# spec: CLI-BTOP-04
 btop --help | grep -o -e "--low-color" -e "--tty" -e "--filter" -e "--preset" -e "--default-config"
 ```
 ```text
@@ -39,6 +40,7 @@ The settings live in a configuration file, which is why two machines can look di
 `--default-config` prints the default one to standard output (the first line names the version):
 
 ```sh
+# spec: CLI-BTOP-03
 btop --default-config | sed -n 1p
 ```
 ```text
@@ -50,6 +52,7 @@ ends with status 1; the output holds colour codes, so the example only counts th
 so:
 
 ```sh
+# spec: CLI-BTOP-01
 btop 2>&1 | grep -c "No tty detected"
 btop >/dev/null 2>&1
 echo "exit $?"
@@ -91,6 +94,7 @@ btop
 Use the snapshot command of the platform (the first line of the BSD one is `Processes:`):
 
 ```sh
+# spec: CLI-BTOP-05 CLI-BTOP-06
 top -l 1 -n 1 | grep -c "^Processes:"
 ```
 ```text

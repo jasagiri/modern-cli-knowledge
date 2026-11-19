@@ -42,6 +42,7 @@ With `--offline` the client never downloads. On first use there is no cache, so 
 status 4 instead of showing a page:
 
 ```sh
+# spec: CLI-TLDR-04
 tldr --offline tar 2>&1
 echo "exit $?"
 ```
@@ -54,6 +55,7 @@ The options differ between clients. tlrc searches pages with `--search`, and has
 `--platform`, `--offline` and `--render`:
 
 ```sh
+# spec: CLI-TLDR-03 CLI-TLDR-05
 tldr --help | grep -E -- "--(search|update|platform|offline|render)"
 ```
 ```text

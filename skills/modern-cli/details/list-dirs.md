@@ -27,6 +27,7 @@ locale, so both commands print the same here:
 ls -1 .
 ```
 ```sh
+# spec: CLI-EZA-01 CLI-EZA-04
 eza -1 --sort=Name .
 ```
 ```text
@@ -47,6 +48,7 @@ repository directory and the sandbox's own `.home`, which the classic command re
 ls -1A . | grep -v -e '^.git$' -e '^.home$'
 ```
 ```sh
+# spec: CLI-EZA-05
 eza -1 -a --sort=Name -I '.git|.home' .
 ```
 ```text
@@ -90,6 +92,7 @@ src
 Sort by extension, or reverse any sort with `-r`:
 
 ```sh
+# spec: CLI-EZA-01
 eza -1 --sort=extension src && eza -1 -r --sort=Name src
 ```
 ```text
@@ -105,6 +108,7 @@ A tree, limited in depth (`-T`/`--tree`, `-L`), leaving out entries by glob (`-I
 patterns):
 
 ```sh
+# spec: CLI-EZA-02 CLI-EZA-09
 eza --tree --sort=Name -L 2 -I 'build|data|*.log' .
 ```
 ```text
@@ -128,6 +132,7 @@ fixture is an empty directory, which eza does not accept as a repository (rg and
 `build` and `debug.log` are still listed:
 
 ```sh
+# spec: CLI-EZA-06
 eza -T -L1 --sort=Name --git-ignore .
 ```
 ```text
@@ -147,6 +152,7 @@ An empty `.git` directory is not a repository, so `--git-ignore` hides nothing t
 listing:
 
 ```sh
+# spec: CLI-EZA-06 CLI-EZA-06
 rm -rf .git
 git init -q
 eza -T -L1 --sort=Name --git-ignore .
@@ -160,10 +166,24 @@ eza -T -L1 --sort=Name --git-ignore .
 └── src
 ```
 
+The long format with its changing columns (permissions, owner, dates) switched off leaves the size
+and the name:
+
+```sh
+# spec: CLI-EZA-08
+eza -l --no-permissions --no-user --no-time --sort=Name notes
+```
+```text
+36 'meeting notes.txt'
+53 todo.txt
+26 日本語.txt
+```
+
 Mark directories with a slash. The value must be attached with `=`; `eza -1 -F notes` would take
 `notes` as the value of `-F` and fail with status 2:
 
 ```sh
+# spec: CLI-EZA-07
 eza -1 --sort=Name --classify=always .
 ```
 ```text
@@ -179,16 +199,29 @@ src/
 A path after `-F` is read as its value, so this is a usage error:
 
 ```sh
+# spec: CLI-EZA-07
 # exit: 2
 eza -1 -F notes
 ```
 ```text
 ```
 
+Without a path and with standard input that is not a terminal (here `/dev/null`), eza lists the
+paths read from it, which are none: nothing is printed and the status is 0:
+
+```sh
+# spec: CLI-EZA-03
+eza -1 --sort=Name; echo "status: $?"
+```
+```text
+status: 0
+```
+
 A path that does not exist is an error (status 2; BSD `ls` uses 1), and nothing goes to standard
 output:
 
 ```sh
+# spec: CLI-EZA-10
 # exit: 2
 eza nope
 ```
@@ -242,6 +275,7 @@ misses it:
 eza -1 notes | grep '^meeting'
 ```
 ```sh
+# spec: CLI-EZA-02
 eza -1 --no-quotes notes | grep '^meeting'
 ```
 ```text
@@ -255,6 +289,7 @@ that is empty, so nothing is printed and the status is still 0:
 eza -1 --sort=Name
 ```
 ```sh
+# spec: CLI-EZA-01 CLI-EZA-04
 eza -1 --sort=Name .
 ```
 ```text

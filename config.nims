@@ -39,9 +39,8 @@ task dataset, "rebuild dataset/":
   exec "bin/dataset_build"
 
 task specCoverage, "G1 table":
-  var args = ""
-  if dirExists("docs/spec"):
-    for f in listFiles("docs/spec"):
-      if f.endsWith(".md"): args.add " --spec-table " & f
-  exec "../nim-spec-coverage/bin/tools/spec_coverage . --spec-table docs/specification.md" & args &
+  # docs/spec/*.md is not passed: its CLI-<TOOL>-NN IDs are confirmed by `# spec:` lines in the
+  # pages, not by `# SPEC:` tags in tests, and tests/test_spec.nim (MCLI-SPEC-02, MCLI-SPEC-03)
+  # is their G1.
+  exec "../nim-spec-coverage/bin/tools/spec_coverage . --spec-table docs/specification.md" &
     " > docs/quality/g1-spec-coverage.md"

@@ -27,6 +27,7 @@ below use `--filter`, which prints the matching lines and exits without a termin
 Keep the lines that match a word. The list comes from `fd`, sorted so that the input order is fixed:
 
 ```sh
+# spec: CLI-FZF-06
 fd -t f . | sort | fzf --filter todo
 ```
 ```text
@@ -36,6 +37,7 @@ notes/todo.txt
 Several terms separated by spaces must all match (AND), in any order:
 
 ```sh
+# spec: CLI-FZF-02
 fd -t f . | sort | fzf --filter 'src nim'
 ```
 ```text
@@ -46,6 +48,7 @@ src/util.nim
 A bar with a space on each side (` | `) means OR: lines that match either term.
 
 ```sh
+# spec: CLI-FZF-01
 fd -t f . | sort | fzf --filter 'todo | main'
 ```
 ```text
@@ -58,6 +61,7 @@ other. `mnn` matches `src/main.nim` and `notes/meeting notes.txt`. With `-e` (ex
 query matches nothing, and the status is 1:
 
 ```sh
+# spec: CLI-FZF-01
 fd -t f . | sort | fzf --filter mnn
 ```
 ```text
@@ -65,6 +69,7 @@ src/main.nim
 notes/meeting notes.txt
 ```
 ```sh
+# spec: CLI-FZF-01 CLI-FZF-08
 # exit: 1
 fd -t f . | sort | fzf -e --filter mnn
 ```
@@ -76,6 +81,7 @@ the shortest line with the best match, and the fuzzy hit `fxoxo` comes after `fo
 `--no-sort` keeps the input order, and `grep` (no fuzzy matches) always does:
 
 ```sh
+# spec: CLI-FZF-04
 printf 'xxfoo\nfoo bar\nfoo\nfxoxo\n' | fzf --filter foo
 ```
 ```text
@@ -85,6 +91,7 @@ fxoxo
 xxfoo
 ```
 ```sh
+# spec: CLI-FZF-04
 printf 'xxfoo\nfoo bar\nfoo\nfxoxo\n' | fzf --filter foo --no-sort
 ```
 ```text
@@ -92,6 +99,21 @@ xxfoo
 foo bar
 foo
 fxoxo
+```
+
+Matching is case-insensitive unless the query has an uppercase letter (smart case):
+
+```sh
+# spec: CLI-FZF-05
+printf 'README.md\nreadme.txt\n' | fzf --filter readme
+echo ---
+printf 'README.md\nreadme.txt\n' | fzf --filter README
+```
+```text
+README.md
+readme.txt
+---
+README.md
 ```
 
 Anchors and negation: `^` matches the start, `$` the end, `!` excludes. A term that starts
@@ -109,6 +131,7 @@ File names with spaces or non-ASCII characters stay intact when the list is sepa
 (`--read0` for input, `--print0` for output) and the consumer reads NUL (`xargs -0`):
 
 ```sh
+# spec: CLI-FZF-07
 fd -t f -0 . notes | fzf --read0 --print0 --filter 日本 | xargs -0 cat
 ```
 ```text
@@ -157,6 +180,7 @@ The matches are separated by newlines, so a name with a space becomes two argume
 fd -t f . notes | fzf --filter meeting | xargs cat
 ```
 ```sh
+# spec: CLI-FZF-07
 fd -t f -0 . notes | fzf --read0 --print0 --filter meeting | xargs -0 cat
 ```
 ```text
@@ -171,6 +195,7 @@ status is 1. Write the bar with a space on each side:
 fd -t f . | sort | fzf --filter 'todo|main'
 ```
 ```sh
+# spec: CLI-FZF-01
 fd -t f . | sort | fzf --filter 'todo | main'
 ```
 ```text

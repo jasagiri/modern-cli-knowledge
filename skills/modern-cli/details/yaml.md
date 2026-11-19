@@ -51,6 +51,7 @@ exact shape:
 sed -i '' 's/^debug: false/debug: true/' config/app.yaml && cat config/app.yaml
 ```
 ```sh
+# spec: CLI-YQ-05
 yq -i '.debug = true' config/app.yaml && cat config/app.yaml
 ```
 ```text
@@ -66,6 +67,7 @@ Adding to a list so that running the command twice gives the same file: build th
 `unique`, because `+=` appends again every time:
 
 ```sh idempotent
+# spec: CLI-YQ-07
 yq -i '.ports = (.ports + [9090] | unique)' config/app.yaml && cat config/app.yaml
 ```
 ```text
@@ -81,6 +83,7 @@ ports:
 Convert YAML to compact JSON, and JSON to YAML:
 
 ```sh
+# spec: CLI-YQ-01
 yq -o=json -I=0 '.' config/app.yaml; yq -p=json -o=yaml '.' config/app.json
 ```
 ```text
@@ -106,9 +109,45 @@ ports:
   - 8443
 ```
 
+The output format follows the input: JSON in gives JSON out, with quotes. A missing key prints
+`null` and exits 0:
+
+```sh
+# spec: CLI-YQ-01 CLI-YQ-02
+yq '.name' config/app.json
+yq '.name' config/app.yaml
+yq '.nope' config/app.yaml; echo "status: $?"
+```
+```text
+"demo"
+demo
+null
+status: 0
+```
+
+A string assigned to a key is written with quotes, because `3` would otherwise be read as a number.
+Spacing before a trailing comment is reduced to one space, and a file with several documents gives
+one result per document, separated by `---`:
+
+```sh
+# spec: CLI-YQ-03 CLI-YQ-04 CLI-YQ-06
+yq '.version = "3"' config/app.yaml | head -2
+printf 'a:   1    # c\n' | yq .
+printf 'a: 1\n---\na: 2\n' | yq '.a'
+```
+```text
+name: demo
+version: "3"
+a: 1 # c
+1
+---
+2
+```
+
 `-e` turns a missing key into a failure, which a script can test:
 
 ```sh
+# spec: CLI-YQ-02
 # exit: 1
 yq -e '.nope' config/app.yaml
 ```
@@ -155,6 +194,7 @@ null
 yq -i '.ports += [9090]' config/app.yaml
 ```
 ```sh idempotent
+# spec: CLI-YQ-07
 yq -i '.ports = (.ports + [9090] | unique)' config/app.yaml && yq -o=json -I=0 '.ports' config/app.yaml
 ```
 ```text

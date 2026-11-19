@@ -28,6 +28,7 @@ the word `sleep`; the `select` keeps that one process, because the shell running
 also a match for the word:
 
 ```sh
+# spec: CLI-PROCS-01
 sleep 4711 &
 P=$!
 procs --json sleep | jq -r ".[] | select(.PID == $P) | .Command"
@@ -40,6 +41,7 @@ sleep 4711
 A numeric keyword matches the PID exactly (not a port, and not text in the command line):
 
 ```sh
+# spec: CLI-PROCS-01
 sleep 4711 &
 P=$!
 procs --json $P | jq -r ".[].Command"
@@ -66,12 +68,31 @@ When piped, procs prints no colour and no pager, but still the boxed table with 
 header's `PID:` (1, then 0; `grep -c` exits 1 when it counts 0, so `|| true`):
 
 ```sh
+# spec: CLI-PROCS-03
 procs | head -n 1 | grep -c "PID:"
 procs --no-header | head -n 1 | grep -c "PID:" || true
 ```
 ```text
 1
 0
+```
+
+`procs --list` names the column kinds; the ones beyond `ps` include the ports and the Docker name.
+`--json` combined with `--tree` or `--only` is not valid JSON in this version (jq cannot parse it,
+status 5), `--json` alone is:
+
+```sh
+# spec: CLI-PROCS-02 CLI-PROCS-04
+procs --list | grep -c -E '^ *(TcpPort|UdpPort|Docker) '
+procs --json --tree 2>/dev/null | jq -r type > /dev/null 2>&1; echo "tree: $?"
+procs --json --only Pid 2>/dev/null | jq -r type > /dev/null 2>&1; echo "only: $?"
+procs --json | jq -r type > /dev/null 2>&1; echo "plain: $?"
+```
+```text
+3
+tree: 5
+only: 5
+plain: 0
 ```
 
 ## Differences that change results
@@ -121,6 +142,7 @@ procs --json sleep 4711
 Search by the word, then pick the process in the JSON:
 
 ```sh
+# spec: CLI-PROCS-01
 sleep 4711 &
 P=$!
 procs --json sleep | jq -r ".[] | select(.Command | endswith(\"4711\")) | .Command"

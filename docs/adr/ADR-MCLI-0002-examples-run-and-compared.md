@@ -60,3 +60,11 @@ Option 3, with these rules (MCLI-PAGE-02, MCLI-PAGE-03, MCLI-EX-01…05, MCLI-VE
 ## Rejected alternatives
 
 Options 1 and 2 above.
+
+## 訂正 (2026-11-19)
+
+The implementation grew a second header line for a command: `# spec: CLI-<TOOL>-NN ...`, in any
+order with `# exit: N` (MCLI-SPEC-01). It names the claims of the page's spec table
+(`docs/spec/<page>.md`) that the example confirms; the table, its rows marked 例 or 本文のみ, and
+the test that compares both ways are MCLI-SPEC-02 and MCLI-SPEC-03 in `docs/specification.md`.
+The rule above ("`# exit: N` as the first line") now reads: header lines first, in any order.

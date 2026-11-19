@@ -36,6 +36,7 @@ GET /search?q=cli&page=2 HTTP/1.1
 `-p B` prints the request body:
 
 ```sh
+# spec: CLI-XH-03
 xh --offline --ignore-stdin -p B POST example.org/api name=demo n=1 m:=1 ports:=[1,2] debug:=false | head -1
 ```
 ```text
@@ -45,6 +46,7 @@ xh --offline --ignore-stdin -p B POST example.org/api name=demo n=1 m:=1 ports:=
 `Name:value` is a header. The JSON body also sets `Content-Type` and `Accept` for you:
 
 ```sh
+# spec: CLI-XH-02
 xh --offline --ignore-stdin -p H POST example.org name=x X-Token:abc | grep -E '^(POST|X-Token|Content-Type|Accept:)'
 ```
 ```text
@@ -57,6 +59,7 @@ X-Token: abc
 With `-f` the items become a form body instead:
 
 ```sh
+# spec: CLI-XH-02
 xh --offline --ignore-stdin -f -p B POST example.org a=1 b=2 | head -1
 ```
 ```text
@@ -66,6 +69,7 @@ a=1&b=2
 Send a file as the body with `@path`; here the body is read back with jq to show it is the file:
 
 ```sh
+# spec: CLI-XH-06
 xh --offline --ignore-stdin -p B POST example.org @data/people.json | jq -c 'map(.name)'
 ```
 ```text
@@ -75,6 +79,7 @@ xh --offline --ignore-stdin -p B POST example.org @data/people.json | jq -c 'map
 The method is POST as soon as there is a body and GET otherwise, unless it is written first:
 
 ```sh
+# spec: CLI-XH-04
 xh --offline --ignore-stdin -p H example.org name=x | head -1; xh --offline --ignore-stdin -p H PUT example.org id==1 | head -1
 ```
 ```text
@@ -82,11 +87,38 @@ POST / HTTP/1.1
 PUT /?id=1 HTTP/1.1
 ```
 
+A query value is percent-encoded: `b==c%d` is sent as `b=c%25d`. A file that is not JSON gets the
+content type of its kind (`blob.bin` here is `application/octet-stream`):
+
+```sh
+# spec: CLI-XH-05 CLI-XH-06
+xh --offline --ignore-stdin -p H example.org b==c%d | head -1
+xh --offline --ignore-stdin -p H POST example.org @data/blob.bin | grep -i '^content-type'
+```
+```text
+GET /?b=c%25d HTTP/1.1
+Content-Type: application/octet-stream
+```
+
+Without `--ignore-stdin`, standard input that is not a terminal (here `/dev/null`) is the body: a
+plain GET becomes a POST, and request items are refused with status 1:
+
+```sh
+# spec: CLI-XH-01
+xh --offline -p H example.org | head -1
+xh --offline POST example.org name=x > /dev/null 2>&1; echo "status: $?"
+```
+```text
+POST / HTTP/1.1
+status: 1
+```
+
 `--curl` prints the equivalent `curl` command instead of the request (`--offline` is ignored with a
 warning on standard error, and nothing is sent). Use it to translate a command into the classic form
 or to learn what xh adds:
 
 ```sh
+# spec: CLI-XH-11
 xh --ignore-stdin --curl POST example.org/api name=demo X-Token:abc q==1 2>/dev/null
 ```
 ```text
@@ -146,6 +178,7 @@ rejects the request items:
 xh --offline POST example.org name=x
 ```
 ```sh
+# spec: CLI-XH-01
 xh --offline --ignore-stdin -p B POST example.org name=x | head -1
 ```
 ```text

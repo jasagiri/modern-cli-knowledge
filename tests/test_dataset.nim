@@ -82,6 +82,17 @@ suite "dataset":
     check rs[2].files == @["skills/modern-cli/details/find.md:8"]
 
   # SPEC: MCLI-DATA-02
+  # SPEC: MCLI-SPEC-01
+  test "MCLI-DATA-02 Given an example with a spec line, when derived, then its record lists the ID and no output shows the line":
+    let page = verified.replace("```sh\nls\n```", "```sh\n# spec: CLI-FIND-01\nls\n```").replace(
+      "## When to keep the classic command\nIn scripts.", "## When to keep the classic command\nIn scripts:\n```sh\n# spec: CLI-FIND-02\nls\n```")
+    let rs = recordsOf("find.md", page)
+    check rs[2].specIds == @["MCLI-EX-01", "CLI-FIND-01"]
+    for r in rs:
+      check "# spec:" notin r.output
+      check "# spec:" notin r.input
+
+  # SPEC: MCLI-DATA-02
   test "MCLI-DATA-02 Given a page marked 未検証, when derived, then it gives no record":
     let page = verified.replace("# Find: tool\n", "# Find: tool\nStatus: 未検証 (not installed)\n")
     check recordsOf("find.md", page).len == 0

@@ -12,9 +12,11 @@
 ##   ```sh unverified  not run (a tool that is not installed, interactive, or prints what differs
 ##                     per machine); allowed only on a page whose status line says why
 ##   ```text           the exact standard output of the command before it
-## A command whose first line is `# exit: N` must end with status N; every other command with 0.
+## A command may start with header comment lines, in any order: `# exit: N` (it must end with
+## status N; every other command ends with 0) and `# spec: CLI-<TOOL>-NN ...` (the spec IDs of
+## docs/spec/<page>.md that this example confirms, MCLI-SPEC-01).
 
-import std/[options, strutils]
+import std/[options, sequtils, strutils]
 
 type
   BlockKind* = enum
@@ -32,6 +34,7 @@ type
     expected*: string
     exitCode*: int
     idempotent*: bool
+    specs*: seq[string]  ## the IDs of its `# spec:` header lines
 
   Section* = object
     heading*: string
@@ -56,6 +59,7 @@ const
     "Differences that change results", "When to keep the classic command", "Pitfalls", "Sources"]
   statusPrefix = "Status: 未検証"
   exitPrefix = "# exit:"
+  specPrefix = "# spec:"
 
 func kindOf(info: string): BlockKind {.raises: [].} =
   let words = info.splitWhitespace
@@ -108,17 +112,50 @@ func parsePage*(text: string): Page {.raises: [].} =
     elif result.sections.len > 0:
       result.sections[^1].body.add raw & "\n"
 
-func expectedExit(body: string): Option[int] {.raises: [].} =
-  ## N from a first line `# exit: N` (N in 0..255), 0 without that line, none when malformed.
-  let first = (if body.len == 0: "" else: body.splitLines[0])
-  if not first.startsWith(exitPrefix): return some(0)
-  let digits = first[exitPrefix.len .. ^1].strip
-  if digits.len == 0 or digits.len > 3: return none(int)
-  var n = 0
-  for c in digits:
-    if c notin {'0'..'9'}: return none(int)
-    n = n * 10 + (ord(c) - ord('0'))
-  if n > 255: none(int) else: some(n)
+func isSpecId(w: string): bool {.raises: [].} =
+  ## CLI-<TOOL>-NN: TOOL is upper-case letters and digits, NN two digits.
+  let parts = w.split('-')
+  if parts.len != 3 or parts[0] != "CLI" or parts[1].len == 0 or parts[2].len != 2: return false
+  parts[1].allCharsInSet({'A'..'Z', '0'..'9'}) and parts[2].allCharsInSet({'0'..'9'})
+
+type Header = object
+  exit: Option[int]
+  specs: seq[string]
+  error: string  ## "" when the header is well formed
+
+func readHeader(body: string): Header {.raises: [].} =
+  ## The leading `# exit: N` (N in 0..255) and `# spec: ID ...` lines of a command, in any order.
+  ## Without an exit line the status is 0.
+  result.exit = some(0)
+  var sawExit = false
+  for line in body.splitLines:
+    if line.startsWith(exitPrefix):
+      let digits = line[exitPrefix.len .. ^1].strip
+      var n = 0
+      var ok = digits.len in 1 .. 3 and not sawExit
+      for c in digits:
+        if c notin {'0'..'9'}: ok = false
+        else: n = n * 10 + (ord(c) - ord('0'))
+      if not ok or n > 255:
+        return Header(exit: none(int), error: "malformed `# exit: N` line (N in 0..255)")
+      result.exit = some(n)
+      sawExit = true
+    elif line.startsWith(specPrefix):
+      let ids = line[specPrefix.len .. ^1].splitWhitespace
+      if ids.len == 0 or not ids.allIt(isSpecId(it)):
+        return Header(exit: result.exit, error: "malformed `# spec:` line (IDs like CLI-RG-01 separated by spaces)")
+      for id in ids:
+        if id notin result.specs: result.specs.add id
+    else:
+      break
+
+func withoutHeader*(body: string): string {.raises: [].} =
+  ## The command without its leading `# exit:` and `# spec:` lines.
+  var rest = body
+  while rest.startsWith(exitPrefix) or rest.startsWith(specPrefix):
+    let nl = rest.find('\n')
+    rest = (if nl < 0: "" else: rest[nl + 1 .. ^1])
+  rest
 
 func examplesOf*(page: Page): Examples {.raises: [].} =
   ## Pairs the blocks into examples, or says at which line the page breaks the block rules.
@@ -141,12 +178,12 @@ func examplesOf*(page: Page): Examples {.raises: [].} =
         fail(b[i].line, "```sh must be followed by its ```text output")
         inc i
         continue
-      let code = expectedExit(b[i].body)
-      if code.isNone:
-        fail(b[i].line, "malformed `# exit: N` line (N in 0..255)")
+      let h = readHeader(b[i].body)
+      if h.error.len > 0:
+        fail(b[i].line, h.error)
       else:
         result.examples.add Example(classic: none(CodeBlock), command: b[i],
-          expected: b[i + 1].body, exitCode: code.get, idempotent: k == bkIdempotent)
+          expected: b[i + 1].body, exitCode: h.exit.get, idempotent: k == bkIdempotent, specs: h.specs)
       i += 2
     of bkClassic, bkBad:
       let what = (if k == bkClassic: "```sh classic" else: "```sh bad")
@@ -154,14 +191,14 @@ func examplesOf*(page: Page): Examples {.raises: [].} =
         fail(b[i].line, what & " must be followed by a ```sh command and its ```text output")
         inc i
         continue
-      let code = expectedExit(b[i + 1].body)
-      if code.isNone:
-        fail(b[i + 1].line, "malformed `# exit: N` line (N in 0..255)")
+      let h = readHeader(b[i + 1].body)
+      if h.error.len > 0:
+        fail(b[i + 1].line, h.error)
       else:
         result.examples.add Example(
           classic: (if k == bkClassic: some(b[i]) else: none(CodeBlock)),
-          command: b[i + 1], expected: b[i + 2].body, exitCode: code.get,
-          idempotent: b[i + 1].kind == bkIdempotent)
+          command: b[i + 1], expected: b[i + 2].body, exitCode: h.exit.get,
+          idempotent: b[i + 1].kind == bkIdempotent, specs: h.specs)
       i += 3
     of bkUnverified:
       if page.status.len == 0:

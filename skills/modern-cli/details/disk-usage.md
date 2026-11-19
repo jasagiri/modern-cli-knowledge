@@ -27,6 +27,7 @@ The files of a directory, smallest first, the largest at the bottom next to the 
 limits the depth, `--skip-total` drops the row for `notes` itself):
 
 ```sh
+# spec: CLI-DUST-01 CLI-DUST-04 CLI-DUST-08
 dust -s -b -P --skip-total -d 1 notes
 ```
 ```text
@@ -38,6 +39,7 @@ dust -s -b -P --skip-total -d 1 notes
 Reverse the order, biggest first (`-r`):
 
 ```sh
+# spec: CLI-DUST-04
 dust -s -b -P --skip-total -d 1 -r notes
 ```
 ```text
@@ -49,6 +51,7 @@ dust -s -b -P --skip-total -d 1 -r notes
 Keep only the n largest entries (`-n`), or only those of at least a size (`-z`):
 
 ```sh
+# spec: CLI-DUST-05
 dust -s -b -P --skip-total -d 1 -n 2 notes && dust -s -b -P --skip-total -d 1 -z 50 notes
 ```
 ```text
@@ -61,6 +64,7 @@ Count only the files whose path matches a regex (`-e`; `-v` is the opposite). Th
 is then the exact sum of those files:
 
 ```sh
+# spec: CLI-DUST-03
 dust -s -b -P -e '\.(nim|py)$' src
 ```
 ```text
@@ -94,14 +98,39 @@ dust -f -b -P -d 1 src
 3 ┌─┴ src
 ```
 
+dust counts hidden files, and it does not read `.gitignore`: `debug.log` is ignored by the
+fixture's `.gitignore` and `.hidden` is hidden, and both are listed; `-i` skips the hidden one:
+
+```sh
+# spec: CLI-DUST-09
+dust -s -b -P --skip-total -d 1 -e 'debug.log|hidden' .
+dust -s -b -P --skip-total -d 1 -i -e 'debug.log|hidden' .
+```
+```text
+ 15B ┌── debug.log
+114B ├── .hidden
+15B ┌── debug.log
+```
+
 A path that cannot be read is reported on standard error, and when no path can be read the status
 is 1:
 
 ```sh
+# spec: CLI-DUST-10
 # exit: 1
 dust -s -b -P nope
 ```
 ```text
+```
+
+A missing path among readable ones is still reported on standard error, but the status stays 0:
+
+```sh
+# spec: CLI-DUST-10
+dust -s -b -P --skip-total -d 1 nope notes > /dev/null 2>&1; echo "status: $?"
+```
+```text
+status: 0
 ```
 
 ## Differences that change results
@@ -149,6 +178,7 @@ the options that matter:
 dust notes
 ```
 ```sh
+# spec: CLI-DUST-01 CLI-DUST-04 CLI-DUST-08
 dust -s -b -P --skip-total -d 1 notes
 ```
 ```text

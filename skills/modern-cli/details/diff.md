@@ -24,6 +24,7 @@ The data on this page: `old.txt` has the lines `a b c`, `new.txt` has `a B c d`.
 unified diff, with the two timestamp lines cut off because they change on every run (`tail -n +3`):
 
 ```sh
+# spec: CLI-DELTA-04
 printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
 diff -u old.txt new.txt | tail -n +3
 ```
@@ -41,6 +42,7 @@ pipe, so the examples remove the escape sequences with `perl`. What is left is w
 colour sees: a file header, a hunk header, and no `+` or `-` markers at all:
 
 ```sh
+# spec: CLI-DELTA-01 CLI-DELTA-04
 printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
 delta --no-gitconfig old.txt new.txt | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g'
 ```
@@ -75,6 +77,17 @@ delta --no-gitconfig --line-numbers --file-style omit --hunk-header-style omit -
     ⋮  4 │d
 ```
 
+With `NO_COLOR=1` set (the examples run with it) delta still writes escape sequences into a pipe:
+
+```sh
+# spec: CLI-DELTA-02
+printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
+delta --no-gitconfig old.txt new.txt | grep -q "$(printf '\033')" && echo "escapes present"
+```
+```text
+escapes present
+```
+
 `--color-only` keeps the diff text as it came in and only adds colour, so `+` and `-` stay (here the
 input is the `git diff --no-index` form that delta builds for two file names):
 
@@ -100,6 +113,7 @@ The exit status of `delta old new` is 1 when the files differ and 0 when they ar
 files differ:
 
 ```sh
+# spec: CLI-DELTA-05 CLI-DELTA-06
 printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
 delta old.txt new.txt > /dev/null; echo "files differ: $?"
 delta old.txt old.txt > /dev/null; echo "files equal: $?"
@@ -114,6 +128,7 @@ after a pipe: 0
 Two directories are compared file by file, and the file header shows the path inside them:
 
 ```sh
+# spec: CLI-DELTA-06
 mkdir a b && printf 'x\ny\n' > a/f && printf 'x\nz\n' > b/f
 delta --no-gitconfig a b | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g'
 ```
@@ -175,11 +190,23 @@ delta's output is a view, so saving it as a patch gives a file that `patch` cann
 delta old.txt new.txt > review.patch
 ```
 ```sh
+# spec: CLI-DELTA-03
 printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
 diff -u old.txt new.txt > review.patch; patch -s old.txt review.patch && cmp old.txt new.txt && echo applied
 ```
 ```text
 applied
+```
+
+The view, saved the same way, is not a patch: `patch` finds nothing to apply and ends with status 2.
+
+```sh
+# spec: CLI-DELTA-03
+printf 'a\nb\nc\n' > old.txt && printf 'a\nB\nc\nd\n' > new.txt
+delta --no-gitconfig old.txt new.txt > review.patch; patch -s old.txt review.patch > /dev/null 2>&1; echo "status: $?"
+```
+```text
+status: 2
 ```
 
 ## Sources

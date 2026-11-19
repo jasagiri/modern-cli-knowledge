@@ -72,18 +72,21 @@ the numbers live in the 2.0 JSON: one entry per run in `measurements`, each with
 `time_wall_clock` and its unit:
 
 ```sh
-hyperfine --runs 5 --warmup 2 --export-json r.json 'true' > /dev/null && jq -r '.primary_metric, .results[0].measurements[0].time_wall_clock.unit, (.results[0].measurements | length)' r.json
+# spec: CLI-HYPERFINE-01 CLI-HYPERFINE-06
+hyperfine --runs 5 --warmup 2 --export-json r.json 'true' > /dev/null && jq -r '.primary_metric, .results[0].measurements[0].time_wall_clock.unit, (.results[0].measurements | length), (.results[0] | has("times"))' r.json
 ```
 ```text
 time_wall_clock
 second
 5
+false
 ```
 
 A command that exits non-zero stops the benchmark (hyperfine exits 1); `-i` (`--ignore-failure`)
 measures it anyway and the exit codes stay in the export:
 
 ```sh
+# spec: CLI-HYPERFINE-05
 hyperfine --runs 2 'false' > /dev/null 2>&1; echo "stopped: $?"; hyperfine --runs 2 -i --export-json r.json 'false' > /dev/null 2>&1; echo "ignored: $?"; jq -c '.results[0].measurements | map(.exit_code)' r.json
 ```
 ```text
@@ -96,6 +99,7 @@ Show what the benchmarked command prints with `--show-output` (it is hidden othe
 two lines are the output of the two runs; the statistics that follow are not shown:
 
 ```sh
+# spec: CLI-HYPERFINE-03
 hyperfine --runs 2 --show-output 'echo hi' | head -2
 ```
 ```text
@@ -148,11 +152,22 @@ A pipeline is shell syntax, so the default (no shell) refuses it. Ask for a shel
 hyperfine --runs 2 'echo a | wc -l'
 ```
 ```sh
+# spec: CLI-HYPERFINE-04
 hyperfine --runs 2 -S --show-output 'echo a | wc -l' | head -2 | tr -d ' '
 ```
 ```text
 1
 1
+```
+
+The default refusal is a failed benchmark, status 1, before anything is measured:
+
+```sh
+# spec: CLI-HYPERFINE-04
+hyperfine --runs 2 'echo a | wc -l' > /dev/null 2>&1; echo "status: $?"
+```
+```text
+status: 1
 ```
 
 ## Sources

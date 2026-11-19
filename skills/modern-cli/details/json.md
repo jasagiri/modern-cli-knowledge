@@ -23,6 +23,7 @@ key moves, is nested, or the file is minified onto several lines. Both print the
 grep -o '"version": *"[^"]*"' config/app.json | sed 's/.*: *//'
 ```
 ```sh
+# spec: CLI-JQ-02
 jq '.version' config/app.json
 ```
 ```text
@@ -32,6 +33,7 @@ jq '.version' config/app.json
 Print the raw string, without the JSON quotes, with `-r`:
 
 ```sh
+# spec: CLI-JQ-02
 jq -r '.name, .version' config/app.json
 ```
 ```text
@@ -80,6 +82,7 @@ Use the exit status with `-e`: it is 1 when the last output is `false` or `null`
 was no output at all:
 
 ```sh
+# spec: CLI-JQ-04
 jq -e '.debug' config/app.json > /dev/null; echo "false -> $?"; jq -e '.[] | select(.age > 99)' data/people.json > /dev/null; echo "no output -> $?"
 ```
 ```text
@@ -87,9 +90,55 @@ false -> 1
 no output -> 4
 ```
 
+`jq .` re-formats: two-space indentation and one value per line. Objects keep the order of the
+input, and `-S` sorts the keys:
+
+```sh
+# spec: CLI-JQ-01 CLI-JQ-03
+jq . config/app.json | head -3
+jq -c . config/app.json
+jq -c -S . config/app.json
+```
+```text
+{
+  "name": "demo",
+  "version": "1.2.0",
+{"name":"demo","version":"1.2.0","debug":false,"ports":[8080,8443]}
+{"debug":false,"name":"demo","ports":[8080,8443],"version":"1.2.0"}
+```
+
+Other statuses: 2 for an unreadable file, 5 for input that is not JSON (a trailing comma) and for
+an error while the filter runs. Comparison across types follows a fixed order, so a number is
+smaller than any string and never equal to it, and no comparison is an error:
+
+```sh
+# spec: CLI-JQ-04 CLI-JQ-05 CLI-JQ-07
+jq . nope.json 2>/dev/null; echo "unreadable: $?"
+printf '{"a":1,}' | jq . > /dev/null 2>&1; echo "trailing comma: $?"
+jq -n '1/0' > /dev/null 2>&1; echo "runtime: $?"
+jq -n -c '[30 > "30", "30" > 30]'
+```
+```text
+unreadable: 2
+trailing comma: 5
+runtime: 5
+[false,true]
+```
+
+jq has no in-place option: redirecting its output onto its own input empties the file first.
+
+```sh
+# spec: CLI-JQ-06
+cp config/app.json f.json; jq . f.json > f.json; wc -c < f.json | tr -d ' '
+```
+```text
+0
+```
+
 A filter that does not compile exits 3, before any input is read:
 
 ```sh
+# spec: CLI-JQ-04
 # exit: 3
 jq 'bad filter(' config/app.json
 ```

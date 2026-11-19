@@ -72,3 +72,27 @@ suite "pairing":
     let swapped = full.replace("## Pitfalls", "## Tmp").replace("## Commands", "## Pitfalls").replace("## Tmp", "## Commands")
     check sectionOrderErrors(parsePage(swapped)).len > 0
     check sectionOrderErrors(parsePage(full.replace("## Sources", "## Refs"))) == @["missing or out of order: ## Sources"]
+
+suite "spec header":
+  # SPEC: MCLI-SPEC-01
+  test "MCLI-SPEC-01 Given spec comment lines at the top of a command, when paired, then the example names those IDs":
+    let ex = examplesOf(parsePage(page("```sh\n# spec: CLI-RG-01 CLI-RG-02\nrg x\n```\n```text\nout\n```\n")))
+    check ex.errors.len == 0
+    check ex.examples[0].specs == @["CLI-RG-01", "CLI-RG-02"]
+    check ex.examples[0].exitCode == 0
+
+  # SPEC: MCLI-SPEC-01
+  test "MCLI-SPEC-01 Given an exit line and spec lines in either order, when paired, then both are read":
+    for body in ["# exit: 1\n# spec: CLI-RG-03\n", "# spec: CLI-RG-03\n# exit: 1\n"]:
+      let ex = examplesOf(parsePage(page("```sh\n" & body & "rg NOPE\n```\n```text\n```\n")))
+      check ex.errors.len == 0
+      check ex.examples[0].exitCode == 1
+      check ex.examples[0].specs == @["CLI-RG-03"]
+      check withoutHeader(body & "rg NOPE\n") == "rg NOPE\n"
+
+  # SPEC: MCLI-SPEC-01
+  test "MCLI-SPEC-01 Given a malformed spec line, when paired, then it is an error naming the line":
+    for bad in ["# spec:", "# spec: rg-1", "# spec: CLI-RG-1", "# spec: CLI-RG-01,CLI-RG-02"]:
+      let ex = examplesOf(parsePage(page("```sh\n" & bad & "\nrg\n```\n```text\n```\n")))
+      check ex.errors.len == 1
+      check ex.examples.len == 0

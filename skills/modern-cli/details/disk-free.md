@@ -26,6 +26,7 @@ The groups are `local`, `network`, `fuse`, `special`, `loops` and `binds`, in bo
 `-hide` (the help names them twice):
 
 ```sh
+# spec: CLI-DUF-01
 duf -help 2>&1 | grep -c "local, network, fuse, special, loops, binds"
 ```
 ```text
@@ -37,6 +38,7 @@ every device, so filter the result with `jq` (the root of the filesystem is a `l
 `-json -only local /tmp` lists exactly as many devices as plain `-json`):
 
 ```sh
+# spec: CLI-DUF-03
 duf -json | jq -r ".[] | select(.mount_point == \"/\") | .device_type"
 [ "$(duf -json | jq length)" = "$(duf -json -only local /tmp | jq length)" ] && echo same
 ```
@@ -48,6 +50,7 @@ same
 The fields of each device in the JSON of duf 0.9.1 (sizes are in bytes):
 
 ```sh
+# spec: CLI-DUF-03
 duf -json | jq -r ".[0] | keys | join(\", \")"
 ```
 ```text
@@ -88,16 +91,18 @@ duf /tmp -only local
 Put the flags first:
 
 ```sh
-duf -only local /tmp | sed -n 2p
+# spec: CLI-DUF-05
+duf -only local /tmp > /dev/null; echo "exit $?"
 ```
 ```text
-│ 1 local device                                                               │
+exit 0
 ```
 
 The failure is status 1 with an `lstat` error on standard output (the `sed` hides the working
 directory that the message names):
 
 ```sh
+# spec: CLI-DUF-05
 out=$(duf /tmp -only local); echo "exit $?"
 echo "$out" | sed "s#^lstat .*/-only#lstat -only#"
 ```

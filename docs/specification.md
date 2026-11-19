@@ -23,6 +23,14 @@ statements (what each tool does on the fixture) are in `docs/spec/*.md`.
 | MCLI-EX-04 | A ```sh idempotent command run twice leaves the tree byte-identical to running it once. |
 | MCLI-EX-05 | Running the examples leaves fixtures/tree unchanged. |
 
+## Spec tables (ADR-MCLI-0002)
+
+| ID | Statement |
+|---|---|
+| MCLI-SPEC-01 | A command may start with `# spec: CLI-<TOOL>-NN ...` lines, in any order with the `# exit: N` line; the example then names those IDs, and a malformed line is an error naming its line. |
+| MCLI-SPEC-02 | Each details page has a table docs/spec/<page>.md with one row per claim (ID `CLI-<TOOL>-NN`, 箇所, 主張, 確かめ). A row marked `例` is named by a `# spec:` line of an example of the page; a row marked `本文のみ (<reason>)` is named by none; no example names an ID missing from the table; IDs are unique across all tables. This is the G1 of the pages: its denominator is the rows marked `例`, and the text-only rows are the ones outside it, each with its reason. |
+| MCLI-SPEC-03 | Every bullet of "Differences that change results" (D1, D2, …) and of "When to keep the classic command" (K1, K2, …) is pointed at by at least one row, and no row points past the bullets. |
+
 ## Tool versions (ADR-MCLI-0002)
 
 | ID | Statement |

@@ -15,6 +15,7 @@ is run against a fixed file tree and its output compared byte for byte.
 | `dataset/` | `records.jsonl` and `chat.jsonl`, generated from the pages |
 | `src/mcli/` | page parser, example runner, dataset derivation |
 | `tools/` | `try_command` (run one command as the tests do), `dataset_build` |
+| `docs/spec/` | one table per page: its claims (ID `CLI-<TOOL>-NN`) and the examples that confirm them |
 | `docs/adr/` | why: sources (0001), examples run and compared (0002), dataset (0003) |
 
 ## Using the skill
@@ -26,7 +27,8 @@ Copy or link `skills/modern-cli/` into `~/.claude/skills/` (or a project's `.cla
 `dataset/records.jsonl` has one record per line: `id`, `kind` (`explain`, `task`, `rewrite`,
 `pitfall`, `keep-classic`), `area` (`cli`), `concept` (the page), `instruction`, `input`, `output`,
 `specIds`, `sources` (catalog IDs) and `files` (page and line). `dataset/chat.jsonl` holds the same
-records as system/user/assistant messages. Pages marked 未検証 give no record. Regenerate with
+records as system/user/assistant messages. `specIds` also lists the `CLI-<TOOL>-NN` IDs that the
+example names in its `# spec:` line. Pages marked 未検証 give no record. Regenerate with
 `nim dataset`.
 
 ## Development

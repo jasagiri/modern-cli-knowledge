@@ -26,6 +26,7 @@ print the same here:
 find notes -type f -name '*.txt' -print0 | sort -z | xargs -0 grep -c TODO
 ```
 ```sh
+# spec: CLI-COMBINE-01
 fd -0 -t f -e txt . notes | sort -z | xargs -0 grep -c TODO
 ```
 ```text
@@ -39,6 +40,7 @@ argument. The placeholders are `{}` (the path), `{/}` (file name), `{//}` (direc
 (path without extension). Parallel jobs finish in any order, so sort the output:
 
 ```sh
+# spec: CLI-COMBINE-04
 fd -t f -e txt . notes -x echo '{/}' '{//}' '{.}' | sort
 ```
 ```text
@@ -51,6 +53,7 @@ todo.txt notes notes/todo
 Put the paths and options before `-x`/`-X`: everything after it belongs to the command.
 
 ```sh
+# spec: CLI-COMBINE-04
 fd -t f -e txt . notes -X wc -l | sort -k2
 ```
 ```text
@@ -68,6 +71,7 @@ takes no argument. Both leave the same counts:
 grep -rl --null TODO notes | xargs -0 sed -i '' 's/TODO/DONE/' && grep -rc DONE notes | sort
 ```
 ```sh
+# spec: CLI-COMBINE-01 CLI-COMBINE-06
 rg -l0 --sort path TODO notes | xargs -0 sd TODO DONE && rg -c --sort path DONE notes
 ```
 ```text
@@ -102,10 +106,66 @@ notes/todo.txt:3
 notes/日本語.txt:1
 ```
 
+Without a path argument `fd` prints `config/app.json` when piped, but `./config/app.json` with `-0`
+(and with `-x`, `-X`); only the paths start differently:
+
+```sh
+# spec: CLI-COMBINE-02
+fd -t f -e json
+fd -0 -t f -e json | tr '\0' '\n'
+```
+```text
+config/app.json
+data/people.json
+./config/app.json
+./data/people.json
+```
+
+`fd` skips what `.gitignore` lists and hidden files, `find` does not look at either. Here `debug.log`
+is ignored: `fd` finds none (0), `fd -u` and `find` find it:
+
+```sh
+# spec: CLI-COMBINE-05
+fd -e log | wc -l | tr -d ' '
+fd -u -e log
+find . -name '*.log'
+```
+```text
+0
+debug.log
+./debug.log
+```
+
+When nothing matches, the pipeline still succeeds (BSD `xargs` does not run `sd` on empty input), so
+the missing match is hidden:
+
+```sh
+# spec: CLI-COMBINE-07
+rg -l0 NOPE notes | xargs -0 sd NOPE x; echo "status: $?"
+```
+```text
+status: 0
+```
+
+The replacement syntax differs too: `sd` writes a capture as `$1`, `sed -E` as `\1`. Both swap the
+two letters here:
+
+```sh classic
+echo a-b | sed -E 's/(.)-(.)/\2-\1/'
+```
+```sh
+# spec: CLI-COMBINE-08
+echo a-b | sd '(\w)-(\w)' '$2-$1'
+```
+```text
+b-a
+```
+
 Run `jq` over the files `fd` finds, passing each path with `{}` (once for `--arg`, once as
 the input file):
 
 ```sh
+# spec: CLI-COMBINE-04
 fd -t f -e json . config -x jq -c --arg f {} '{file: $f, keys: keys}' {}
 ```
 ```text
@@ -147,6 +207,7 @@ fd -t f -e json . config -x jq -c --arg f {} '{file: $f, keys: keys}' {}
   file so grep prints the name even when a batch holds one file:
 
 ```sh
+# spec: CLI-COMBINE-11
 find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} + | LC_ALL=C sort
 ```
 ```text
@@ -158,6 +219,7 @@ src/util.nim:4:proc unused() = discard  # TODO: remove
   failed". A CI check that fails when it finds something:
 
 ```sh
+# spec: CLI-COMBINE-11
 # exit: 1
 hits=$(find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} +)
 if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
@@ -177,6 +239,7 @@ Names are separated by newlines, so a name with a space becomes two arguments (`
 rg -l TODO notes | xargs sd TODO DONE
 ```
 ```sh
+# spec: CLI-COMBINE-01 CLI-COMBINE-06
 rg -l0 --sort path TODO notes | xargs -0 sd TODO DONE && rg -c --sort path DONE notes
 ```
 ```text

@@ -23,6 +23,7 @@ Replace in a stream. sd replaces every match by default, where sed needs the `g`
 printf 'a.b.c\n' | sed 's/\./-/g'
 ```
 ```sh
+# spec: CLI-SD-01 CLI-SD-04
 printf 'a.b.c\n' | sd '\.' '-'
 ```
 ```text
@@ -45,6 +46,7 @@ Reorder with capture groups. Quote the replacement with single quotes so the she
 printf 'John Smith\n' | sed -E 's/([A-Za-z]+) ([A-Za-z]+)/\2, \1/'
 ```
 ```sh
+# spec: CLI-SD-05
 printf 'John Smith\n' | sd '(\w+) (\w+)' '$2, $1'
 ```
 ```text
@@ -58,6 +60,7 @@ command shows the result:
 sed -i '' 's/TODO/DONE/g' README.md && cat README.md
 ```
 ```sh
+# spec: CLI-SD-01
 sd TODO DONE README.md && cat README.md
 ```
 ```text
@@ -70,6 +73,7 @@ The same edit is idempotent: once the pattern is gone, a second run changes noth
 exits 0.
 
 ```sh idempotent
+# spec: CLI-SD-01
 sd 'TODO:' 'DONE:' README.md && cat README.md
 ```
 ```text
@@ -82,6 +86,7 @@ Preview without writing (`-p`): the file stays as it was. The preview format is 
 subject to change, so scripts should not parse it.
 
 ```sh
+# spec: CLI-SD-01
 sd -p TODO DONE notes/todo.txt && cat notes/todo.txt
 ```
 ```text
@@ -96,6 +101,7 @@ TODO: fix the parser
 Match across lines with `-A`; without it sd works line by line and `\n` matches nothing:
 
 ```sh
+# spec: CLI-SD-07
 printf 'a\nb\n' | sd -A 'a\nb' X
 ```
 ```text
@@ -105,6 +111,7 @@ X
 Limit the number of replacements per input with `-n`, and ignore case with `-f i`:
 
 ```sh
+# spec: CLI-SD-04 CLI-SD-10
 printf 'aaa\n' | sd -n 2 a b && printf 'aXb\n' | sd -f i x -- '-'
 ```
 ```text
@@ -112,11 +119,64 @@ bba
 a-b
 ```
 
+Without `-A` a `\n` in the pattern matches nothing, and a `/` needs no escaping (sd has no
+delimiter):
+
+```sh
+# spec: CLI-SD-07 CLI-SD-08
+printf 'a\nb\n' | sd 'a\nb' X
+printf 'a/b\n' | sd '/' '-'
+```
+```text
+a
+b
+a-b
+```
+
+A group followed by letters is read as one group name, which sd rejects (status 1); curly braces end
+the name. A literal `$` is `$$`:
+
+```sh
+# spec: CLI-SD-06
+echo 5 | sd '(\d)' '$1USD' > /dev/null 2>&1; echo "status: $?"
+echo 5 | sd '(\d)' '${1}USD'
+echo price | sd price '$$5'
+```
+```text
+status: 1
+5USD
+$5
+```
+
+No match is not an error: the input comes out unchanged with status 0. An invalid regex is status 1:
+
+```sh
+# spec: CLI-SD-09
+printf 'abc\n' | sd NOPE x; echo "status: $?"
+printf 'abc\n' | sd '(' x > /dev/null 2>&1; echo "status: $?"
+```
+```text
+abc
+status: 0
+status: 1
+```
+
+On BSD (macOS) `sed -i` takes the next argument as the backup suffix, so the GNU form fails:
+
+```sh
+# spec: CLI-SD-02
+printf 'a\n' > f.txt; sed -i 's/a/b/' f.txt > /dev/null 2>&1; echo "status: $?"
+```
+```text
+status: 1
+```
+
 Insert a line before line 1. This is sed's job, not sd's. The portable form puts the text on the
 next line after `i\`; the one-line `sed '1i X'` is GNU only and fails on BSD sed with "expects \
 followed by text":
 
 ```sh
+# spec: CLI-SD-12
 printf 'a\nb\n' > f.txt && sed '1i\
 X
 ' f.txt
@@ -171,6 +231,7 @@ GNU-style `sed -i` fails on macOS, where the argument after `-i` is the backup s
 sed -i 's/TODO/DONE/' README.md
 ```
 ```sh
+# spec: CLI-SD-01
 sd TODO DONE README.md && cat README.md
 ```
 ```text

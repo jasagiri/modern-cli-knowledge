@@ -25,6 +25,7 @@ text here. On a terminal, `bat FILE` adds a header, a grid, line numbers and col
 cat src/main.nim
 ```
 ```sh
+# spec: CLI-BAT-01
 bat src/main.nim
 ```
 ```text
@@ -41,6 +42,7 @@ Plain output on a terminal too (`-p`, `--plain`): no header, no numbers, no grid
 (`-pp`) also turns the pager off.
 
 ```sh
+# spec: CLI-BAT-01
 bat -p notes/todo.txt
 ```
 ```text
@@ -56,6 +58,7 @@ the start):
 sed -n 3,4p src/main.nim
 ```
 ```sh
+# spec: CLI-BAT-06
 bat -p -r 3:4 src/main.nim
 ```
 ```text
@@ -66,6 +69,7 @@ proc main() =
 Line numbers. `-n` shows them even when the output is piped:
 
 ```sh
+# spec: CLI-BAT-01
 bat -n -r 4: src/main.nim
 ```
 ```text
@@ -73,6 +77,40 @@ bat -n -r 4: src/main.nim
    5   echo greet("world")
    6 
    7 main()
+```
+
+Style options are ignored when piped unless `--decorations=always` is given: `--style=numbers`
+prints no number, `-n` does. `cat -n` numbers with a tab (shown as `>`) and a wider pad:
+
+```sh
+# spec: CLI-BAT-02 CLI-BAT-06
+bat --style=numbers src/util.nim | head -1
+bat -n src/util.nim | head -1
+cat -n src/util.nim | head -1 | tr '\t' '>'
+```
+```text
+proc greet*(name: string): string =
+   1 proc greet*(name: string): string =
+     1>proc greet*(name: string): string =
+```
+
+Several files are joined with no header when piped, as `cat` does; the status is 1 when any file
+cannot be read, and the readable ones are still printed:
+
+```sh
+# spec: CLI-BAT-04 CLI-BAT-07
+bat notes/todo.txt README.md | head -4
+bat -p nope.txt notes/todo.txt 2>/dev/null; echo "status: $?"
+```
+```text
+TODO: buy milk
+done: call Alice
+TODO: fix the parser
+# Demo project
+TODO: buy milk
+done: call Alice
+TODO: fix the parser
+status: 1
 ```
 
 Show invisible characters (`-A`, `--show-all`): spaces as `·`, line ends as `␊`, carriage returns as
@@ -100,6 +138,7 @@ A missing file is an error: the message goes to standard error, nothing to stand
 the status is 1, as for `cat`:
 
 ```sh
+# spec: CLI-BAT-07
 # exit: 1
 bat -p nope.txt
 ```

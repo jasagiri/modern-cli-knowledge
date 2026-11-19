@@ -27,6 +27,7 @@ the match instead of jumping, and it only knows directories that were recorded (
 the hook, or added with `zoxide add`):
 
 ```sh
+# spec: CLI-ZOXIDE-01
 zoxide query notes 2>/dev/null || echo "not recorded"
 zoxide add notes
 zoxide query notes | sed "s#.*/##"
@@ -59,6 +60,7 @@ no history. `zoxide query` does not do that: it only searches the database, so a
 never recorded finds nothing:
 
 ```sh
+# spec: CLI-ZOXIDE-02
 eval "$(zoxide init posix --hook none)"
 ROOT=$(pwd)
 z notes
@@ -77,6 +79,7 @@ no match
 lost. Its sources are listed by its help:
 
 ```sh
+# spec: CLI-ZOXIDE-01
 zoxide import --help | sed -n 10,16p
 ```
 ```text
@@ -127,10 +130,13 @@ z notes
 Resolve the directory once, then use the path:
 
 ```sh
+# spec: CLI-ZOXIDE-05
+z notes 2>/dev/null || echo "z is not defined here"
 zoxide add notes
 cd "$(zoxide query notes)" && basename "$PWD"
 ```
 ```text
+z is not defined here
 notes
 ```
 
@@ -140,17 +146,22 @@ A word that names a directory of the current directory does not search the histo
 ```sh bad
 z lib
 ```
-Give a second word, or a path, to reach the recorded one (two words always search the history):
+The first command goes to `./lib`. Give a second word, or a path, to reach the recorded one (two words always search the history):
 
 ```sh
+# spec: CLI-ZOXIDE-03
 eval "$(zoxide init posix --hook none)"
 ROOT=$(pwd)
 mkdir -p app/lib lib
 zoxide add app/lib
+z lib
+echo "${PWD#"$ROOT"/}"
+cd "$ROOT"
 z app lib
 echo "${PWD#"$ROOT"/}"
 ```
 ```text
+lib
 app/lib
 ```
 
