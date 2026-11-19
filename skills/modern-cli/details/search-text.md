@@ -189,6 +189,9 @@ rg NOPE
 
 ## Differences that change results
 
+To see what the defaults leave out of your paths, compare `rg --files src notes` with
+`rg -uuu --files src notes`; when the lists are equal, the default and `-uuu` give the same matches.
+
 - **Ignored files.** rg skips what `.gitignore`, `.ignore` and `.rgignore` list, and only inside a
   repository (a directory with `.git`). The same tree without `.git` gives more matches. grep reads
   every file it is given.

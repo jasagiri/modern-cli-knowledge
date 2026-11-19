@@ -231,7 +231,8 @@ src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
   The statuses mean 1 found, 0 clean, 2 the check could not run. In this form a grep error (an
   unreadable file, status 2) shows only on standard error and the check passes. To fail on it, let
-  each batch turn grep's 0 and 1 into success and its 2 into failure, so `find` fails only then:
+  each batch turn grep's 0 and 1 into success and its 2 into failure, so `find` fails only then. A CI
+  check should use this second form:
 
 ```sh
 # spec: CLI-COMBINE-11
@@ -245,6 +246,8 @@ if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
 src/main.nim:4:  # TODO: parse arguments
 src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
+  With an unreadable `.nim` file under `src`, grep exits 2 for its batch, `[ $? -le 1 ]` fails, `find`
+  exits non-zero, and the script prints `grep failed` and exits 2.
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 
 ## Pitfalls
