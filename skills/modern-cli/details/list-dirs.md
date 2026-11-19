@@ -141,6 +141,31 @@ eza -T -L1 --sort=Name --git-ignore .
 └── src
 ```
 
+Mark directories with a slash. The value must be attached with `=`; `eza -1 -F notes` would take
+`notes` as the value of `-F` and fail with status 2:
+
+```sh
+eza -1 --sort=Name --classify=always .
+```
+```text
+README.md
+build/
+config/
+data/
+debug.log
+notes/
+src/
+```
+
+A path after `-F` is read as its value, so this is a usage error:
+
+```sh
+# exit: 2
+eza -1 -F notes
+```
+```text
+```
+
 A path that does not exist is an error (status 2; BSD `ls` uses 1), and nothing goes to standard
 output:
 
@@ -170,8 +195,9 @@ eza nope
 - **`.gitignore`.** eza lists ignored files unless `--git-ignore` is given, and then only in a real
   git repository. `tree` and `ls` never read it.
 - **Trailing slash.** `ls -d */` and `ls -F` mark directories with `/`; eza does not unless
-  `-F` (`--classify`) is given. Note that `-F` takes an optional value, so `eza -F DIR` may take
-  `DIR` as the value: write `-F=always` or put the path first.
+  `-F` (`--classify`) is given. `-F` takes an optional value (`always`, `auto`, `never`), so a path
+  right after it is read as that value and is an error (status 2): write `-F=always`, `--classify=always`,
+  or put the path before `-F`.
 - **Long format.** `-l` adds permissions, owner, size and dates that change per machine and per
   run; do not copy them into tests or documents. Use `--no-permissions --no-user --no-time` to
   trim the columns that vary, or the long format only to read it.

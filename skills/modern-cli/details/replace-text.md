@@ -112,6 +112,21 @@ bba
 a-b
 ```
 
+Insert a line before line 1. This is sed's job, not sd's. The portable form puts the text on the
+next line after `i\`; the one-line `sed '1i X'` is GNU only and fails on BSD sed with "expects \
+followed by text":
+
+```sh
+printf 'a\nb\n' > f.txt && sed '1i\
+X
+' f.txt
+```
+```text
+X
+a
+b
+```
+
 ## Differences that change results
 
 - **In-place editing is the default for files.** `sd OLD NEW FILE` overwrites FILE with no backup
@@ -144,8 +159,8 @@ a-b
 
 - POSIX shell scripts that run on machines without sd: use `sed` (and `sed -i.bak` with a suffix,
   which works on both BSD and GNU, then remove the backup).
-- Line-oriented edits that sed does well: `sed -n '5,10p'`, `sed '/pat/d'`, `sed '3i\text'`;
-  sd only substitutes.
+- Line-oriented edits that sed does well: `sed -n '5,10p'`, `sed '/pat/d'`, and inserting a line
+  with the form that works on both BSD and GNU, a backslash and a newline (example in Commands); sd only substitutes.
 - When the script relies on basic-regex semantics or on `\1` in the replacement.
 
 ## Pitfalls

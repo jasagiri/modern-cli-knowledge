@@ -122,6 +122,16 @@ main.nim
 util.nim
 ```
 
+With `-x` the substituted path keeps the `./` prefix, unlike plain output:
+
+```sh
+fd -e nim -x echo {} | sort
+```
+```text
+./src/main.nim
+./src/util.nim
+```
+
 No match is not an error: fd exits 0 and prints nothing, as `find` does, where `grep` exits 1.
 
 ```sh
@@ -141,8 +151,10 @@ fd NOPE
   literal string.
 - **Order.** fd walks in parallel and its order changes between runs. There is no sort option:
   pipe to `sort`. `find` order is directory order, stable on one filesystem but not sorted.
-- **Paths.** `find .` prints `./src/main.nim`; fd prints `src/main.nim` (`--strip-cwd-prefix=never`
-  gives the prefix back). Directories print with a trailing `/`; `find` has none.
+- **Paths.** `find .` prints `./src/main.nim`; fd prints `src/main.nim` on a terminal or a pipe, but
+  with `-0`, `-x` and `-X` it prints `./src/main.nim` (the prefix is kept so a name cannot be taken for
+  an option). `--strip-cwd-prefix=never` gives the prefix back in plain output, `always` removes it
+  everywhere. Directories print with a trailing `/`; `find` has none.
 - **Type.** Like `find`, fd prints files, directories and symlinks unless told; add `-t f` for files only.
 - **Search path.** `fd PATTERN PATH...`: the pattern comes first, then paths. `fd . src` lists all
   of `src`; `find src` has the path first. With no pattern, `fd` lists everything.
