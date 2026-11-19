@@ -69,4 +69,7 @@ would carry a `Status: 未検証 (<reason>)` line; none does now.
 
 Write the classic command when you do not know the target machine has the tool, and say so when
 you use a modern one in a script. Never pipe a modern tool's decorated output into another
-program; ask for its plain or machine format.
+program; ask for its plain or machine format. In a CI check, branch on the output, not on the
+status: `hits=$(find src -type f -name '*.nim' -exec grep -n PAT /dev/null {} +)` then
+`[ -n "$hits" ]`, because grep's "no match" (1) and a real error look the same to `find`
+(`details/combine.md`).
