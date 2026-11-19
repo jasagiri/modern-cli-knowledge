@@ -74,7 +74,7 @@ notes/日本語.txt:1:メモ: TODO を減らす
 ```
 
 For one order across several paths, give no `--sort` and sort the whole output by path, then by line
-number:
+number. `LC_ALL=C` makes `sort` compare bytes, so the order does not change with the locale:
 
 ```sh
 # spec: CLI-RG-06
