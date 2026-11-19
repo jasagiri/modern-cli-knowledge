@@ -32,14 +32,17 @@ description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq,
 | measure run time | `time` | `hyperfine` | [details/benchmark.md](details/benchmark.md) |
 | pick from a list | `grep` | `fzf` (`--filter` in scripts) | [details/pick-interactively.md](details/pick-interactively.md) |
 | combine them in pipelines | `find -print0 \| xargs -0` | `fd -0 \| xargs -0`, `fd -x`, `rg --json \| jq` | [details/combine.md](details/combine.md) |
-| list processes (未検証) | `ps` | `procs` | [details/processes.md](details/processes.md) |
-| free disk space (未検証) | `df` | `duf` | [details/disk-free.md](details/disk-free.md) |
-| jump to a directory (未検証) | `cd` | `zoxide` | [details/navigate.md](details/navigate.md) |
-| short command help (未検証) | `man` | `tldr` | [details/command-help.md](details/command-help.md) |
-| watch system load (未検証) | `top` | `btop` | [details/monitor.md](details/monitor.md) |
+| list processes | `ps` | `procs` | [details/processes.md](details/processes.md) |
+| free disk space | `df` | `duf` | [details/disk-free.md](details/disk-free.md) |
+| jump to a directory | `cd` | `zoxide` | [details/navigate.md](details/navigate.md) |
+| short command help | `man` | `tldr` | [details/command-help.md](details/command-help.md) |
+| watch system load | `top` | `btop` | [details/monitor.md](details/monitor.md) |
 
-Pages marked 未検証 describe tools that could not be run where the examples were checked (not
-installed, interactive, or output that depends on the machine); their commands are unchecked.
+Every page's examples are run by the tests. Commands whose output depends on the machine, the
+network or a terminal (the process table of `procs`, the tables of `duf`, the screen of `btop`,
+`z` changing the directory of a shell, the pages of `tldr`) are described in the text, not run;
+the examples beside them check what does not depend on those. A page that cannot run any command
+would carry a `Status: 未検証 (<reason>)` line; none does now.
 
 ## Differences that silently change results
 
