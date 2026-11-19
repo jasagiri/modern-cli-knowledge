@@ -141,6 +141,25 @@ eza -T -L1 --sort=Name --git-ignore .
 └── src
 ```
 
+In a real repository the entries of `.gitignore` (`build/` and `*.log` in the fixture) are hidden.
+An empty `.git` directory is not a repository, so `--git-ignore` hides nothing there. Here
+`git init` makes the directory a repository, and `build` and `debug.log` are gone from the same
+listing:
+
+```sh
+rm -rf .git
+git init -q
+eza -T -L1 --sort=Name --git-ignore .
+```
+```text
+.
+├── README.md
+├── config
+├── data
+├── notes
+└── src
+```
+
 Mark directories with a slash. The value must be attached with `=`; `eza -1 -F notes` would take
 `notes` as the value of `-F` and fail with status 2:
 
