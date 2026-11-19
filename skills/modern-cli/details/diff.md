@@ -111,6 +111,25 @@ files equal: 0
 after a pipe: 0
 ```
 
+Two directories are compared file by file, and the file header shows the path inside them:
+
+```sh
+mkdir a b && printf 'x\ny\n' > a/f && printf 'x\nz\n' > b/f
+delta --no-gitconfig a b | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g'
+```
+```text
+
+a/f ⟶   b/f
+────────────────────────────────────────────────────────────────────────────────
+
+───┐
+1: │
+───┘
+x
+y
+z
+```
+
 As a pager for git, delta is set in the git configuration (`core.pager = delta` and
 `interactive.diffFilter = delta --color-only`), and then `git diff`, `git log -p` and `git show`
 print through it. That setup changes a user's git configuration and shows a pager, so it is
@@ -131,8 +150,9 @@ described here and not run.
 - **Exit status.** With two file names it exits 1 when they differ, as `diff` does; at the end of
   a pipe it reports its own status (0), so `diff … | delta` cannot be used to test for a difference.
   Use `diff -q` or `cmp -s` for that.
-- **Input.** It takes two files, or a diff on standard input; for a directory comparison use
-  `diff -ru` and pipe it in.
+- **Input.** It takes two files, two directories (example below), or a diff on standard input.
+  For two paths delta runs `git diff --no-index` itself, so `git` must be on `PATH`; on a machine
+  without git, pipe `diff -u` (or `diff -ru` for directories) into delta instead.
 - **Configuration is read from git.** The `[delta]` section of the user's git configuration changes
   colours, line numbers and layout; use `--no-gitconfig` when an output must be reproducible, as the
   examples do.

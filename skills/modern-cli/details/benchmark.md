@@ -106,24 +106,24 @@ hi
 ## Differences that change results
 
 - **Many runs, not one.** `time` measures one run and includes whatever was cold: disk cache, first
-  load of the binary. hyperfine runs the command repeatedly (by default for a time budget, at least
-  10 runs) and reports mean, spread, minimum and maximum. Use `--warmup N` for I/O-heavy commands
-  and `--prepare CMD` to reset state before each run (`--setup CMD` runs once).
+  load of the binary. hyperfine runs the command repeatedly (it chooses the number of runs itself, at
+  least 10 by default, unless `--runs N`) and reports mean, spread, minimum and maximum. Use `--warmup N` for I/O-heavy commands
+  and `--prepare CMD` to reset state before each run (`--setup CMD` runs before each set of runs: once per benchmarked command or parameter value, not
+  once overall).
 - **Output goes to hyperfine.** The benchmarked command's standard output is discarded unless
   `--show-output` is given. Do not benchmark a command that writes a file and expect to see the
   result without checking it.
 - **Shell syntax needs `-S`.** In the checked version (2.0.0) the default is to run the command
   directly, without a shell (`--shell` defaults to `none`). A command with `|`, `&&`, `;` or
   redirections is refused with an error unless `-S`/`--shell=default` (or `--shell=bash` etc.) is
-  given; `-N` runs it directly, passing `|` as an argument. Older versions ran every command in a
-  shell by default, so a command copied from an old article may now fail or mean something else.
-  Check `hyperfine --help`.
+  given; `-N` runs it directly, passing `|` as an argument. Setup, prepare, conclude and cleanup
+  commands always use a shell. Check `hyperfine --help` for the default of the version in use.
 - **Exit status.** A benchmarked command that exits non-zero aborts the run (hyperfine exits 1)
   unless `-i`; `time` reports the command's timing and its status is the command's status.
 - **JSON schema.** In 2.0.0 the export has `schema_version`, `primary_metric` and, per result,
   `command`, `name`, `measurements[]` (each with `time_wall_clock`, `time_user`, `time_system`,
-  `exit_code`, …) and `summary`. Older versions exported `mean`, `stddev` and `times` directly on
-  the result. A script that reads `.results[].mean` breaks on the new schema; check
+  `exit_code`, …) and `summary`; there is no `times` array and no `mean` on the result here
+  (checked: `.results[0].times` is absent). A script written for another schema must check
   `.schema_version` first.
 - **Variance is the result.** Two runs of the same benchmark give different numbers. Compare with
   the spread, not only the mean, and do not put a timing in a test or in documentation.

@@ -5,8 +5,8 @@
 Read and change values in YAML (and convert between YAML and JSON) by path, keeping the document
 valid, instead of cutting lines out of it with text patterns.
 
-This page is about `yq` by mikefarah (version 4, the Go program). A different program with the same
-name, the Python wrapper around jq, has another syntax and does not read these filters.
+This page is about `yq` by mikefarah (version 4). Another program may be installed under the same
+name: check `yq --version` shows `https://github.com/mikefarah/yq`.
 
 ## Classic and modern
 
@@ -15,7 +15,7 @@ name, the Python wrapper around jq, has another syntax and does not read these f
 | `grep '^version:' f.yaml \| sed 's/^version: *//'` | `yq '.version' f.yaml` |
 | `sed -i '' 's/^debug: false/debug: true/' f.yaml` (BSD; GNU: `sed -i`) | `yq -i '.debug = true' f.yaml` |
 | `python3 -c 'import yaml,json,sys; print(json.dumps(yaml.safe_load(sys.stdin)))' < f.yaml` | `yq -o=json -I=0 '.' f.yaml` |
-| (no classic tool converts JSON to YAML) | `yq -p=json -o=yaml '.' f.json` |
+| (no POSIX tool converts JSON to YAML; a script in another language is the classic route) | `yq -p=json -o=yaml '.' f.json` |
 
 ## Commands
 
@@ -135,10 +135,9 @@ null
   prints one result per document, separated by `---`.
 - **Not idempotent by default.** `+=`, `|= . + 1` and similar change the file again on each run.
   Write the edit as an assignment of the final value, or guard it with `unique` or `select`.
-- **Dialect.** The filter language is jq-like but not jq: some jq filters are missing and some
-  functions have other names. Run the filter before relying on a jq recipe.
-- **Version.** The examples were checked with `yq v4.54.1` (mikefarah). v3 and the Python yq use
-  different syntax.
+- **Dialect.** Filters look like jq's but are yq's own; run a filter before reusing a jq recipe.
+- **Version.** The examples were checked with `yq v4.54.1` (mikefarah); other versions and other
+  programs named `yq` are not covered.
 
 ## When to keep the classic command
 

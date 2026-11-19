@@ -87,6 +87,15 @@ false -> 1
 no output -> 4
 ```
 
+A filter that does not compile exits 3, before any input is read:
+
+```sh
+# exit: 3
+jq 'bad filter(' config/app.json
+```
+```text
+```
+
 ## Differences that change results
 
 - **Output is re-formatted.** `jq .` prints two-space indentation and one value per line;
@@ -97,19 +106,17 @@ no output -> 4
 - **Key order.** Objects print in the order of the input; `-S` sorts keys, which is what to use
   when two files must be compared.
 - **Exit status.** By default jq exits 0 for `false`, `null` and no output; only `-e` maps them to
-  1 and 4. Errors are 2 (unreadable file or bad usage) and 5 (an error while running the filter or a
-  parse error on standard input in the checked version, `jq-1.7.1-apple`).
-- **Numbers.** jq 1.7 keeps the literal of a large integer it only copies, but converts it to a
-  double as soon as it does arithmetic on it. A text tool never changes a number.
+  1 and 4. Checked with `jq-1.7.1-apple`: 2 for an unreadable file or bad usage, 3 for a filter that does
+  not compile (example below), 5 for invalid JSON input (from a file or standard input) and for an
+  error while running the filter (`jq -n '1/0'`).
 - **Comparison across types** follows a fixed order (null, false, true, numbers, strings, arrays,
   objects), so `.age > "30"` is never an error and never true for a number.
 - **Editing.** jq has no in-place option: write to a temporary file and move it, or the file is
   emptied by `jq . f.json > f.json`.
 - **Input is JSON only.** Comments, trailing commas and several concatenated documents that are not
   valid JSON make jq stop with a parse error; a text tool would not notice.
-- **Versions.** The examples were checked with `jq-1.7.1-apple`. Servers often carry an older jq
-  (1.5 or 1.6) that lacks newer filters and the large-number handling above: check `jq --version`
-  before relying on a filter you have not run there.
+- **Version.** The examples were checked with `jq-1.7.1-apple`. Run `jq --version` on the machine
+  where the command will run; this page does not cover other versions.
 
 ## When to keep the classic command
 
