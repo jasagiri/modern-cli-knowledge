@@ -1,0 +1,216 @@
+{
+ "userAgent": "modern-cli-knowledge-catalog/0.1 (catalog of free programming books; one request per host at a time)",
+ "rawEnv": "MCLI_RAW",
+ "rawDefault": "~/.cache/modern-cli-knowledge/raw",
+ "fpbCommit": "10e33dd516cc53864e6bece7e6bd51f2a035d06c",
+ "hillside": false,
+ "triage": {
+  "sectionKeywords": [
+   "bash",
+   "shell",
+   "unix",
+   "linux",
+   "command line",
+   "awk",
+   "sed",
+   "regular expression",
+   "terminal"
+  ],
+  "titleKeywords": [
+   "command line",
+   "shell",
+   "bash",
+   "unix",
+   "linux",
+   "awk",
+   "sed",
+   "grep",
+   "regular expression",
+   "terminal"
+  ],
+  "depth2TitleKeywords": [],
+  "outFiles": [
+   "casts/",
+   "free-programming-playgrounds"
+  ],
+  "hillsideCore": false
+ },
+ "listed": [
+  {
+   "url": "https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md",
+   "title": "ripgrep user guide",
+   "section": [
+    "Tool manuals",
+    "rg"
+   ]
+  },
+  {
+   "url": "https://github.com/sharkdp/fd",
+   "title": "fd",
+   "section": [
+    "Tool manuals",
+    "fd"
+   ]
+  },
+  {
+   "url": "https://github.com/chmln/sd",
+   "title": "sd",
+   "section": [
+    "Tool manuals",
+    "sd"
+   ]
+  },
+  {
+   "url": "https://github.com/sharkdp/bat",
+   "title": "bat",
+   "section": [
+    "Tool manuals",
+    "bat"
+   ]
+  },
+  {
+   "url": "https://github.com/eza-community/eza",
+   "title": "eza",
+   "section": [
+    "Tool manuals",
+    "eza"
+   ]
+  },
+  {
+   "url": "https://jqlang.org/manual/",
+   "title": "jq manual",
+   "section": [
+    "Tool manuals",
+    "jq"
+   ]
+  },
+  {
+   "url": "https://mikefarah.gitbook.io/yq/",
+   "title": "yq documentation",
+   "section": [
+    "Tool manuals",
+    "yq"
+   ]
+  },
+  {
+   "url": "https://github.com/dandavison/delta",
+   "title": "delta",
+   "section": [
+    "Tool manuals",
+    "delta"
+   ]
+  },
+  {
+   "url": "https://github.com/sharkdp/hyperfine",
+   "title": "hyperfine",
+   "section": [
+    "Tool manuals",
+    "hyperfine"
+   ]
+  },
+  {
+   "url": "https://github.com/bootandy/dust",
+   "title": "dust",
+   "section": [
+    "Tool manuals",
+    "dust"
+   ]
+  },
+  {
+   "url": "https://github.com/dalance/procs",
+   "title": "procs",
+   "section": [
+    "Tool manuals",
+    "procs"
+   ]
+  },
+  {
+   "url": "https://github.com/ducaale/xh",
+   "title": "xh",
+   "section": [
+    "Tool manuals",
+    "xh"
+   ]
+  },
+  {
+   "url": "https://github.com/junegunn/fzf",
+   "title": "fzf",
+   "section": [
+    "Tool manuals",
+    "fzf"
+   ]
+  },
+  {
+   "url": "https://github.com/ajeetdsouza/zoxide",
+   "title": "zoxide",
+   "section": [
+    "Tool manuals",
+    "zoxide"
+   ]
+  },
+  {
+   "url": "https://github.com/tldr-pages/tldr",
+   "title": "tldr-pages",
+   "section": [
+    "Tool manuals",
+    "tldr"
+   ]
+  },
+  {
+   "url": "https://github.com/aristocratos/btop",
+   "title": "btop",
+   "section": [
+    "Tool manuals",
+    "btop"
+   ]
+  },
+  {
+   "url": "https://github.com/muesli/duf",
+   "title": "duf",
+   "section": [
+    "Tool manuals",
+    "duf"
+   ]
+  },
+  {
+   "url": "https://github.com/orf/gping",
+   "title": "gping",
+   "section": [
+    "Tool manuals",
+    "gping"
+   ]
+  },
+  {
+   "url": "https://pubs.opengroup.org/onlinepubs/9799919799/idx/utilities.html",
+   "title": "POSIX.1-2024 Shell and Utilities: utilities",
+   "section": [
+    "Classic manuals",
+    "POSIX"
+   ]
+  },
+  {
+   "url": "https://www.gnu.org/software/grep/manual/",
+   "title": "GNU grep manual",
+   "section": [
+    "Classic manuals",
+    "grep"
+   ]
+  },
+  {
+   "url": "https://www.gnu.org/software/sed/manual/",
+   "title": "GNU sed manual",
+   "section": [
+    "Classic manuals",
+    "sed"
+   ]
+  },
+  {
+   "url": "https://www.gnu.org/software/findutils/manual/html_mono/find.html",
+   "title": "GNU findutils manual",
+   "section": [
+    "Classic manuals",
+    "find"
+   ]
+  }
+ ]
+}
