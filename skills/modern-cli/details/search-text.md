@@ -193,7 +193,7 @@ To see what the defaults leave out of your paths, compare `rg --files src notes`
 `rg -uuu --files src notes`; when the lists are equal, the default and `-uuu` give the same matches.
 
 - **Ignored files.** rg skips what `.gitignore`, `.ignore` and `.rgignore` list, and only inside a
-  repository (a directory with `.git`). The same tree without `.git` gives more matches. grep reads
+  repository (a directory with `.git`; an empty `.git` directory is enough, rg does not check it further). The same tree without `.git` gives more matches. grep reads
   every file it is given.
 - **Hidden files and directories** (names starting with `.`) are skipped by rg unless `--hidden` or
   `-uu`; grep reads them.

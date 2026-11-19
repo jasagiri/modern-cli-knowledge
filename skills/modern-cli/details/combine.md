@@ -216,28 +216,15 @@ src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
   In a script, branch on the output, not on the status: `find` exits non-zero when any `-exec ... +`
   batch does, and grep exits 1 for "no match", so the status cannot tell "no match" from "grep
-  failed". A CI check that fails when it finds something:
+  failed". The CI check to use (statuses: 1 found, 0 clean, 2 the check could not run) lets each batch
+  turn grep's 0 and 1 into success and its 2 into failure, so `find` fails only on a real error.
+  `sh -c '...' sh {} +` runs one shell per batch: the `sh` after the quoted script becomes `$0`, and
+  the file names arrive as `"$@"`:
 
 ```sh
 # spec: CLI-COMBINE-11
 # exit: 1
 [ -d src ] || { echo "src/ is missing" >&2; exit 2; }   # else find fails and hits is empty
-hits=$(find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} +)
-if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
-```
-```text
-src/main.nim:4:  # TODO: parse arguments
-src/util.nim:4:proc unused() = discard  # TODO: remove
-```
-  The statuses mean 1 found, 0 clean, 2 the check could not run. In this form a grep error (an
-  unreadable file, status 2) shows only on standard error and the check passes. To fail on it, let
-  each batch turn grep's 0 and 1 into success and its 2 into failure, so `find` fails only then. A CI
-  check should use this second form:
-
-```sh
-# spec: CLI-COMBINE-11
-# exit: 1
-[ -d src ] || { echo "src/ is missing" >&2; exit 2; }
 hits=$(find src -type f -name '*.nim' -exec sh -c 'grep -n TODO /dev/null "$@"; [ $? -le 1 ]' sh {} +) ||
   { echo "grep failed" >&2; exit 2; }
 if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
@@ -247,7 +234,13 @@ src/main.nim:4:  # TODO: parse arguments
 src/util.nim:4:proc unused() = discard  # TODO: remove
 ```
   With an unreadable `.nim` file under `src`, grep exits 2 for its batch, `[ $? -le 1 ]` fails, `find`
-  exits non-zero, and the script prints `grep failed` and exits 2.
+  exits non-zero, and the script prints `grep failed` and exits 2. Not for CI: the shorter
+  `hits=$(find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} +)` gives the same output
+  here, but a grep error shows only on standard error and the check passes.
+  These forms were run with the macOS (BSD) `find`, `grep` and `sh`, and with BusyBox 1.36.1
+  (`podman run --rm -v "$PWD":/w -w /w busybox:1.36 sh check.sh`), which gave the same output
+  and statuses: 1 found, 0 clean, 2 for an unreadable file. Older or smaller busybox builds may
+  leave out `-exec ... {} +`; check `busybox find --help` there.
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 
 ## Pitfalls
