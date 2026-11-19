@@ -141,7 +141,18 @@ fd -t f -e json . config -x jq -c --arg f {} '{file: $f, keys: keys}' {}
 - When every file must be touched, ignored and hidden ones too, and the pipeline should not
   depend on ignore rules (`find ... -print0`).
 - When the script must run unchanged on Linux and macOS: `sed -i` differs (BSD needs `-i ''`);
-  `find -exec ... +` and `xargs -0` are specified by POSIX or common to both.
+  `find -exec ... +` is in every POSIX version; `find -print0` and `xargs -0` were added in
+  POSIX.1-2024, so older systems and small busybox builds may lack them. The form that works
+  everywhere, names with spaces included, is `find ... -exec CMD {} +`; add `/dev/null` as a first
+  file so grep prints the name even when a batch holds one file:
+
+```sh
+find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} + | LC_ALL=C sort
+```
+```text
+src/main.nim:4:  # TODO: parse arguments
+src/util.nim:4:proc unused() = discard  # TODO: remove
+```
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 
 ## Pitfalls
