@@ -140,7 +140,7 @@ fd -t f -e json . config -x jq -c --arg f {} '{file: $f, keys: keys}' {}
 - POSIX scripts and servers that have `find`, `xargs` and `sed` but not `fd`, `rg` or `sd`.
 - When every file must be touched, ignored and hidden ones too, and the pipeline should not
   depend on ignore rules (`find ... -print0`).
-- When the script must run unchanged on Linux and macOS: `sed -i` differs, `xargs -r` differs;
+- When the script must run unchanged on Linux and macOS: `sed -i` differs (BSD needs `-i ''`);
   `find -exec ... +` and `xargs -0` are specified by POSIX or common to both.
 - When a one-file edit is enough: `sd A B file` needs no pipeline at all.
 

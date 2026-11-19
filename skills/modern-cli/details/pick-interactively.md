@@ -17,7 +17,8 @@ ranked by how well they match, either by choosing in a terminal or, in scripts, 
 
 Interactive use is not run on this page, because it needs a terminal. In a shell with the fzf
 integration loaded, Ctrl-R searches the command history, Ctrl-T inserts a chosen file path and
-Alt-C changes into a chosen directory. `fzf --preview 'bat --color=always {}'` shows a preview
+Alt-C changes into a chosen directory (on macOS Terminal and iTerm2 the Option key does not send
+Meta by default: enable that in the terminal's settings, or press Esc and then c). `fzf --preview 'bat --color=always {}'` shows a preview
 of the highlighted line beside the list, and `--multi` lets Tab mark several lines. The examples
 below use `--filter`, which prints the matching lines and exits without a terminal.
 
@@ -40,6 +41,16 @@ fd -t f . | sort | fzf --filter 'src nim'
 ```text
 src/main.nim
 src/util.nim
+```
+
+A bar with a space on each side (` | `) means OR: lines that match either term.
+
+```sh
+fd -t f . | sort | fzf --filter 'todo | main'
+```
+```text
+src/main.nim
+notes/todo.txt
 ```
 
 By default the match is fuzzy: the characters only have to appear in order, not next to each
@@ -109,7 +120,8 @@ fd -t f -0 . notes | fzf --read0 --print0 --filter 日本 | xargs -0 cat
 - **Fuzzy by default.** `grep` matches the pattern literally (or as a regex); fzf matches any line
   that contains the characters in order, so a short query returns lines grep would not. Use `-e`
   for substring matching. `--filter` always treats the query as fzf syntax, not as a regex:
-  `.` is a plain character and `|` between terms means OR.
+  `.` is a plain character and ` | ` (a bar with spaces on both sides) between terms means OR; a bar
+  without spaces is not an operator.
 - **Terms.** A space separates terms that must all match. To search for text that contains a
   space, escape it with a backslash or quote the whole term with `'`.
 - **Order.** The output is sorted by score (ties by line length, then by input position), so it
@@ -150,6 +162,20 @@ fd -t f -0 . notes | fzf --read0 --print0 --filter meeting | xargs -0 cat
 ```text
 Meeting with Bob
 TODO: send minutes
+```
+
+A bar without spaces is not OR, so `todo|main` is one fuzzy term that matches nothing here and the
+status is 1. Write the bar with a space on each side:
+
+```sh bad
+fd -t f . | sort | fzf --filter 'todo|main'
+```
+```sh
+fd -t f . | sort | fzf --filter 'todo | main'
+```
+```text
+src/main.nim
+notes/todo.txt
 ```
 
 ## Sources
