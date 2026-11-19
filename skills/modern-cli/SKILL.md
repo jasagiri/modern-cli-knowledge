@@ -12,7 +12,7 @@ description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq,
 | interactive work in a repository on a machine that has the tools | the modern tool |
 | a script that others run, a Dockerfile, CI without a setup step, a server you did not provision | the classic POSIX command (`grep`, `find`, `sed`, `awk`, `ls`, `du`, `curl`) |
 | you need every file, ignored or hidden ones included | classic, or the modern tool with its "search everything" flags (`rg -uuu`, `fd -H -I`) |
-| the output is parsed by another program | a format meant for programs: `rg --json`, `fd -0`, `jq -c`, `hyperfine --export-json` |
+| the output is parsed by another program | a format meant for programs: `rg --json` (or `rg -H -n`), `fd -0`, `jq -c`, `hyperfine --export-json`, `procs --json`, `duf -json` (it ignores `-only` and paths: filter with jq) |
 | the tool is not installed | do not install it as a side effect; use the classic command |
 
 ## Tasks
@@ -54,8 +54,9 @@ installed, interactive, or output that depends on the machine); their commands a
   backreferences. Use `-F` for literal text.
 - **In-place editing.** `sd PATTERN REPL FILE` edits the file; BSD `sed -i ''` and GNU `sed -i`
   differ. `jq` never edits in place; `yq -i` does.
-- **Output when piped.** Several tools change format when not on a terminal (bat becomes plain,
-  eza one name per line); delta keeps colour codes even with `NO_COLOR`.
+- **Output when piped.** Several tools change format when not on a terminal: rg drops line numbers
+  (and the file name for a single file) unless `-H -n`, bat becomes plain, eza prints one name per
+  line; delta keeps colour codes even with `NO_COLOR`.
 - **Exit status.** rg exits 1 on no match, fd exits 0; `jq -e` and `yq -e` turn `null` or `false`
   into exit 1. Check what a script tests.
 

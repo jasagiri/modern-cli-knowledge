@@ -73,6 +73,28 @@ rg -F -c --sort path 'greet('
 src/main.nim:1
 ```
 
+When the output is not a terminal (a pipe, a file, a script), rg prints no line numbers, and for a
+single file no file name either:
+
+```sh
+rg TODO src/main.nim
+```
+```text
+  # TODO: parse arguments
+```
+
+Ask for them explicitly when another program reads the output; then rg and grep agree:
+
+```sh classic
+grep -Hn TODO src/main.nim
+```
+```sh
+rg -H -n TODO src/main.nim
+```
+```text
+src/main.nim:4:  # TODO: parse arguments
+```
+
 No match is not an error to hide: rg exits 1, as grep does, and 2 on a real error.
 
 ```sh
@@ -92,6 +114,10 @@ rg NOPE
 - **Binary files.** rg skips files that look binary; grep prints "Binary file … matches" unless `-I`.
 - **Paths.** `grep -r PATTERN .` prints `./path`; `rg PATTERN` prints `path`. Scripts that strip or
   match the `./` prefix break when switching.
+- **Output when piped.** On a terminal rg shows line numbers and groups matches under a file
+  heading; when piped it prints `path:line` without line numbers, and only the line for a single
+  file. A script that splits on `:` (`awk -F:`) must pass `-H -n` (or `--vimgrep`) to get a fixed
+  shape.
 - **Order.** rg searches in parallel, so its output order changes between runs. Add `--sort path`
   (single-threaded) or pipe to `sort` when the order matters.
 - **Regex dialect.** rg uses Rust regex: `(` groups, so `rg 'greet('` is an error, where BSD and GNU
