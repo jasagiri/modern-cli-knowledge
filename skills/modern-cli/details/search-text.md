@@ -54,6 +54,41 @@ src/main.nim
 src/util.nim
 ```
 
+`--sort path` orders the files inside each path you give, in the order you give the paths; it does
+not merge them. With `src` before `notes`, every `src/` line comes first:
+
+```sh
+rg -n --sort path TODO src notes
+```
+```text
+src/legacy.py:2:    # TODO: port to Nim
+src/main.nim:4:  # TODO: parse arguments
+src/util.nim:4:proc unused() = discard  # TODO: remove
+notes/meeting notes.txt:2:TODO: send minutes
+notes/todo.txt:1:TODO: buy milk
+notes/todo.txt:3:TODO: fix the parser
+notes/日本語.txt:1:メモ: TODO を減らす
+```
+
+For one order across several paths, give no `--sort` and sort the whole output by path, then by line
+number:
+
+```sh
+rg -H -n TODO src notes | LC_ALL=C sort -t: -k1,1 -k2,2n
+```
+```text
+notes/meeting notes.txt:2:TODO: send minutes
+notes/todo.txt:1:TODO: buy milk
+notes/todo.txt:3:TODO: fix the parser
+notes/日本語.txt:1:メモ: TODO を減らす
+src/legacy.py:2:    # TODO: port to Nim
+src/main.nim:4:  # TODO: parse arguments
+src/util.nim:4:proc unused() = discard  # TODO: remove
+```
+
+The sort keys split on `:`, so this assumes no path contains a colon; for such paths use
+`rg --json` and sort in jq.
+
 Only one language, with line numbers:
 
 ```sh
@@ -119,7 +154,9 @@ rg NOPE
   file. A script that splits on `:` (`awk -F:`) must pass `-H -n` (or `--vimgrep`) to get a fixed
   shape.
 - **Order.** rg searches in parallel, so its output order changes between runs. Add `--sort path`
-  (single-threaded) or pipe to `sort` when the order matters.
+  (single-threaded) or pipe to `sort` when the order matters. `--sort path` sorts within each path
+  argument and keeps the arguments in the order given; for one order across several paths, pipe to
+  `sort`.
 - **Regex dialect.** rg uses Rust regex: `(` groups, so `rg 'greet('` is an error, where BSD and GNU
   `grep` (basic regex) treat `(` literally. No backreferences or look-around unless `-P`.
 - **Standard input.** With no path, rg searches standard input when it is a pipe or a file, not the

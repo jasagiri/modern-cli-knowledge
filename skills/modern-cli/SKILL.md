@@ -46,7 +46,9 @@ installed, interactive, or output that depends on the machine); their commands a
 - **Ignored and hidden files.** rg and fd skip what `.gitignore` lists (inside a repository) and
   hidden files; grep and find do not. A search that "finds nothing" may only be skipping.
 - **Order.** rg and fd work in parallel: their output order changes between runs. Sort explicitly
-  (`rg --sort path`, `fd … | sort`) when order matters.
+  when order matters: `rg --sort path` sorts within each path argument (arguments stay in the order
+  given), so for several paths pipe to `sort` (`rg -H -n PAT a b | LC_ALL=C sort -t: -k1,1 -k2,2n`);
+  `fd … | sort`.
 - **Standard input.** rg, eza and xh read standard input when it is not a terminal and no path or
   body is given (cron, CI, `xargs`, pipelines). Name the path (`rg TODO .`, `eza .`) and use
   `xh --ignore-stdin`.
