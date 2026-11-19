@@ -221,6 +221,7 @@ src/util.nim:4:proc unused() = discard  # TODO: remove
 ```sh
 # spec: CLI-COMBINE-11
 # exit: 1
+[ -d src ] || { echo "src/ is missing" >&2; exit 2; }   # else find fails and hits is empty
 hits=$(find src -type f -name '*.nim' -exec grep -n TODO /dev/null {} +)
 if [ -n "$hits" ]; then printf '%s\n' "$hits" | LC_ALL=C sort; exit 1; fi
 ```
