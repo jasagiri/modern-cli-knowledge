@@ -91,6 +91,34 @@ src/main.nim
 src/util.nim
 ```
 
+Adding a path to `.gitignore` does not stop tracking a file jj has already recorded: it stays in
+the working-copy commit. `jj file untrack PATH` removes it from tracking and leaves the file on
+disk, and it refuses (exit 1) a path that `.gitignore` does not list, so ignore first:
+
+```sh
+# spec: CLI-JJ-19
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null
+mkdir dist && echo obj > dist/app.o
+jj diff --summary
+jj file untrack dist/app.o 2>/dev/null; echo "untrack before ignoring: exit $?"
+printf 'dist/\n' >> .gitignore
+jj diff --summary
+jj file untrack dist/app.o 2>/dev/null; echo "untrack after ignoring: exit $?"
+jj diff --summary
+ls dist
+```
+```text
+A dist/app.o
+untrack before ignoring: exit 1
+M .gitignore
+A dist/app.o
+untrack after ignoring: exit 0
+M .gitignore
+app.o
+```
+
 `jj commit -m` gives the working-copy commit its description and starts a new, empty one on top.
 A file created afterwards belongs to the new commit, with no command to add it:
 
@@ -145,6 +173,29 @@ after=$(jj log --no-graph -r @ -T 'change_id ++ " " ++ commit_id')
 ```text
 change ID: same
 commit ID: different
+```
+
+`jj commit -m MSG PATH…` puts only the named paths in the commit; the other changes stay in the new
+working-copy commit. `jj bookmark set` creates the bookmark when it does not exist yet:
+
+```sh
+# spec: CLI-JJ-20 CLI-JJ-21
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null
+echo more >> README.md && echo x > new.txt
+jj commit -m 'Update README' README.md 2>/dev/null
+jj diff --summary -r @-
+echo ---
+jj diff --summary
+jj bookmark set feature -r @- 2>/dev/null
+jj log --no-graph -r feature -T 'description.first_line() ++ "\n"'
+```
+```text
+M README.md
+---
+A new.txt
+Update README
 ```
 
 A bookmark (git's branch) does not move when you commit on top of it. Move it yourself, to `@-`
@@ -327,12 +378,14 @@ after commit: nothing above
 
 - **No staging area.** The working copy is a commit that every jj command updates first; a file
   `.gitignore` does not list is tracked as soon as it exists, hidden files and build output
-  included. Add build directories to `.gitignore` before running jj.
-- **Committing.** `jj commit -m` describes the working copy and starts a new empty one; `jj
-  describe` alone stays in the same commit, so the next edits join it.
+  included. Add build directories to `.gitignore` before running jj; a file tracked before it was
+  ignored stays tracked until `jj file untrack PATH`, which refuses a path that is not ignored.
+- **Committing.** `jj commit -m` describes the working copy and starts a new empty one; with paths
+  it takes only those and leaves the rest in the new working copy. `jj describe` alone stays in the
+  same commit, so the next edits join it.
 - **Two IDs.** The change ID survives rewrites; the commit ID changes with every rewrite.
 - **Bookmarks stay put.** A bookmark does not follow new commits as a git branch follows `HEAD`;
-  move it with `jj bookmark set NAME -r @-`.
+  move it with `jj bookmark set NAME -r @-`, which also creates a missing bookmark.
 - **Conflicts are stored.** A rebase or merge that conflicts exits 0 and records the conflict in
   the commit and its descendants; find them with `conflicts()`.
 - **Undo.** `jj undo` takes back the last operation, whatever it was; in jj 0.46 `jj op undo` no

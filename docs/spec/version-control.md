@@ -22,3 +22,6 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-JJ-16 | K1 | Keep git for scripts, CI jobs and machines others run | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-JJ-17 | K2 | In a repository whose checks are git hooks, run them yourself or commit with git | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-JJ-18 | K3 | Use git for submodules, LFS and other features jj does not handle | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-JJ-19 | D1 | A file tracked before it was ignored stays tracked; `jj file untrack PATH` stops tracking it and keeps the file, and exits 1 for a path that is not ignored | 例 |
+| CLI-JJ-20 | D2 | `jj commit -m MSG PATH` commits only the named paths and leaves the other changes in the new working copy | 例 |
+| CLI-JJ-21 | D4 | `jj bookmark set` creates a bookmark that does not exist | 例 |

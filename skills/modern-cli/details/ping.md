@@ -75,6 +75,21 @@ ping -c 2 -q 127.0.0.1 | grep 'packets transmitted'; echo "ping exit $?"
 ping exit 0
 ```
 
+A script that writes `down` for any non-zero status also reports its own mistakes as `down`. On
+macOS `ping` exits 2 when no reply came, 64 on a usage error and 68 when the host name does not
+resolve; GNU `ping` exits 1 when no reply came and 2 on other errors. Test for the no-reply status
+and treat the others as a failure of the check:
+
+```sh
+# spec: CLI-GPING-12
+ping -c 1 -Z 127.0.0.1 > /dev/null 2>&1; echo "bad option: $?"
+ping -c 1 127.0.0.1 > /dev/null 2>&1; echo "reply: $?"
+```
+```text
+bad option: 64
+reply: 0
+```
+
 ## Differences that change results
 
 - **Needs a terminal.** gping draws a full-screen graph; without a terminal (a pipe, cron, CI, an
@@ -86,7 +101,8 @@ ping exit 0
 - **No output for programs.** gping prints nothing a program can read; parse `ping -q`'s summary,
   whose wording differs between BSD and GNU.
 - **Status.** gping exits 1 both without a terminal and on a usage error. `ping` exits 0 when a reply
-  arrived and non-zero when none did (2 on macOS, 1 with GNU `ping`).
+  arrived; on macOS 2 when none did, 64 on a usage error and 68 for a name that does not resolve;
+  GNU `ping` 1 when none did and 2 on other errors.
 - **Version.** The examples were checked with `gping 1.21.0`.
 
 ## When to keep the classic command
