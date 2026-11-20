@@ -17,3 +17,4 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-DUST-11 | K1 | Keep `du -k` or `du -sk` in POSIX scripts, CI images and servers without dust | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-DUST-12 | K2 | Keep `du -sk DIR \| cut -f1` when a script needs one number per path | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-DUST-13 | K3 | Keep `du` when an exact disk-usage figure per directory should match `df` | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-DUST-14 | K2 | `wc -c < FILE` gives a file's exact length, which BSD `wc` pads with spaces | 例 |

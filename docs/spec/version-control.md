@@ -26,3 +26,4 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-JJ-20 | D2 | `jj commit -m MSG PATH` commits only the named paths and leaves the other changes in the new working copy | 例 |
 | CLI-JJ-21 | D4 | `jj bookmark set` creates a bookmark that does not exist | 例 |
 | CLI-JJ-22 | D1 | `jj file untrack` records the removal in the working-copy commit only; the parent keeps the file until `jj squash PATH` moves the removal into it, and the file stays on disk | 例 |
+| CLI-JJ-23 | D6 | After a file was edited, `jj undo` takes back the snapshot of that edit (removing it from disk) instead of the earlier mistake; `jj op revert ID` reverts the chosen operation and keeps the edit | 例 |

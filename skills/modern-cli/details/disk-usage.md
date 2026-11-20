@@ -80,6 +80,18 @@ du -A big/zeros.bin; du -Ak big/zeros.bin
 3	big/zeros.bin
 ```
 
+For a script, the exact length of one file comes from `wc -c`, not from dust's tree (whose
+`-o b` row still carries the `B` and the drawing). BSD `wc` pads the number, so strip the spaces:
+
+```sh
+# spec: CLI-DUST-14
+mkdir big && head -c 3000 /dev/zero > big/zeros.bin
+wc -c < big/zeros.bin | tr -d ' '
+```
+```text
+3000
+```
+
 Count only the files whose path matches a regex (`-e`; `-v` is the opposite). The directory row
 is then the exact sum of those files:
 
@@ -183,8 +195,9 @@ status: 0
 
 - POSIX scripts, CI images and servers without dust: use `du -k` (or `du -sk`), which prints one
   number per path in a fixed unit that other tools parse.
-- When a script needs one machine-readable number per path (`du -sk DIR | cut -f1`): the tree
-  output of dust is for reading.
+- When a script needs one machine-readable number per path (`du -sk DIR | cut -f1`, KiB of disk
+  blocks rounded up): the tree output of dust is for reading, and dust has no bare-number output.
+  For the exact length of a file use `wc -c < FILE`, whose BSD form pads the number with spaces.
 - When an exact disk-usage figure per directory is the question and matches what `df` reports:
   `du` and `dust` without `-s` agree; with `-s` you ask a different question.
 

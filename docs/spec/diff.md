@@ -17,3 +17,4 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-DELTA-11 | K1 | Keep `diff -u`, `diff -q`, `cmp` or the git diff for any script that reads a diff, builds a patch or tests for a difference | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-DELTA-12 | K2 | Keep the classic diff for output stored or emailed as plain text | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-DELTA-13 | K3 | Keep `diff -u` on servers, containers and CI images without delta | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-DELTA-14 | D5 | A pipeline reports its last command's status, so `diff -u a b \| tail` exits 0; writing the diff to a file keeps diff's status 1 | 例 |

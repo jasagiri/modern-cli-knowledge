@@ -248,7 +248,8 @@ Add new.txt
 
 A conflict does not stop a rebase. It is stored in the commit, the rebase exits 0, and the
 commits on top of it (here the working copy, moved along by `-s`) are marked as conflicted too
-until it is resolved. `conflicts()` finds them:
+until it is resolved. `conflicts()` finds them, inherited ones included; `conflicts() ~ @`
+leaves out the working copy:
 
 ```sh
 # spec: CLI-JJ-06
@@ -296,6 +297,44 @@ Import the tree
 Add new.txt
 Import the tree
 jj op undo: exit 2
+```
+
+`jj undo` takes back the latest operation, and editing a file creates one: the next jj command
+first records the edit (a "snapshot working copy" operation), so `jj undo` then takes back that
+recording and the edit disappears from disk, while the abandoned commit stays gone. When files
+changed after the mistake, take back that one operation with `jj op revert ID` (the ID from
+`jj op log`), which keeps the edit:
+
+```sh
+# spec: CLI-JJ-23
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null
+echo x > new.txt && jj commit -m 'Add new.txt' 2>/dev/null
+jj abandon @- 2>/dev/null
+echo 'late edit' >> README.md
+jj undo 2>/dev/null
+echo "after jj undo: edit kept $(grep -c 'late edit' README.md), commits $(jj log --no-graph -r 'all() ~ root()' -T 'description.first_line() ++ ";"')"
+```
+```text
+after jj undo: edit kept 0, commits ;Import the tree;
+```
+```sh
+# spec: CLI-JJ-23
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null
+echo x > new.txt && jj commit -m 'Add new.txt' 2>/dev/null
+jj abandon @- 2>/dev/null
+echo 'late edit' >> README.md
+op=$(jj op log --no-graph -T 'if(description.starts_with("abandon"), id.short() ++ "\n")' | head -n 1)
+jj op revert "$op" 2>/dev/null
+echo "after jj op revert: edit kept $(grep -c 'late edit' README.md)"
+jj log --no-graph -r 'description(substring:"Add new")' -T 'description.first_line() ++ "\n"'
+```
+```text
+after jj op revert: edit kept 1
+Add new.txt
 ```
 
 `jj diff` shows words and line numbers, not a patch; `--git` prints the format that `patch` and
@@ -448,7 +487,8 @@ after commit: nothing above
 - **Conflicts are stored.** A rebase or merge that conflicts exits 0 and records the conflict in
   the commit and its descendants; find them with `conflicts()`.
 - **Undo.** `jj undo` takes back the last operation, whatever it was; in jj 0.46 and 0.47 `jj op undo`
-  no longer exists.
+  no longer exists. An edit made after the mistake is itself recorded as an operation first, so
+  `jj undo` then drops the edit; `jj op revert ID` takes back one chosen operation and keeps it.
 - **Diff format.** `jj diff` is not a patch; use `jj diff --git` for one.
 - **Paths that match nothing.** `jj commit -m MSG PATH` with a mistyped PATH warns on standard error,
   exits 0 and makes an empty commit.

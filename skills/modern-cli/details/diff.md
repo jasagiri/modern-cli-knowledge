@@ -191,6 +191,25 @@ As a pager for git, delta is set in the git configuration (`core.pager = delta` 
 print through it. That setup changes a user's git configuration and shows a pager, so it is
 described here and not run.
 
+In a CI script that both shows the diff and fails on a difference, keep diff's status before
+filtering its output; a pipeline would report `tail`'s:
+
+```sh
+# spec: CLI-DELTA-14
+printf 'a\nb\n' > old.txt && printf 'a\nB\n' > new.txt
+diff -u old.txt new.txt | tail -n +3 > /dev/null; echo "pipeline status $?"
+diff -u old.txt new.txt > review.txt; st=$?
+tail -n +3 review.txt; echo "diff status $st"
+```
+```text
+pipeline status 0
+@@ -1,2 +1,2 @@
+ a
+-b
++B
+diff status 1
+```
+
 ## Differences that change results
 
 - **No `+` and `-` markers.** In delta's default view an added or removed line is told apart by
@@ -205,7 +224,8 @@ described here and not run.
   has `---`, `+++` and `@@ -1,3 +1,4 @@`; scripts that match `^@@` or `^+++` find nothing.
 - **Exit status.** With two file names it exits 1 when they differ, as `diff` does; at the end of
   a pipe it reports its own status (0), so `diff … | delta` cannot be used to test for a difference.
-  Use `diff -q` or `cmp -s` for that.
+  Use `diff -q` or `cmp -s` for that. Any pipeline reports its last command's status, so
+  `diff -u a b | tail -n +3` exits 0 too; write the diff to a file and keep diff's status.
 - **Input.** It takes two files, two directories (example below), or a diff on standard input.
   For two paths delta runs `git diff --no-index` when `git` is on `PATH` and `diff -u` otherwise,
   so the header differs between machines; with neither it exits 2. To get the same input

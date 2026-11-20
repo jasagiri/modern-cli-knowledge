@@ -45,14 +45,17 @@ src/main.nim
 src/util.nim
 ```
 
-A backslash keeps a space inside one term. Without it, `g n` is two terms and also matches
-`config/app.json`; a leading `'` only makes the first term exact:
+A backslash keeps a space inside one term, in the default fuzzy mode and with `-e` alike. Without
+it, `g n` is two terms and also matches `config/app.json`; a leading `'` only makes the first term
+exact:
 
 ```sh
 # spec: CLI-FZF-03
 fd -t f . | sort | fzf --filter 'g\ n'
 echo ---
 fd -t f . | sort | fzf --filter "'g n"
+echo ---
+fd -t f . | sort | fzf -e --filter 'meeting\ notes'
 ```
 ```text
 notes/meeting notes.txt
@@ -60,6 +63,8 @@ notes/meeting notes.txt
 notes/meeting notes.txt
 config/app.json
 config/app.yaml
+---
+notes/meeting notes.txt
 ```
 
 A bar with a space on each side (` | `) means OR: lines that match either term.
