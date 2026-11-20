@@ -245,8 +245,8 @@ Replace todo
 ```
 
 Every command that changes the repository is an operation in `jj op log`, and `jj undo` takes back
-the last one, `abandon` included. In jj 0.46 the command is `jj undo` (and `jj redo`); the older
-`jj op undo` is gone and exits 2:
+the last one, `abandon` included. In jj 0.46 and 0.47 the command is `jj undo` (and `jj redo`); the
+older `jj op undo` is gone and exits 2:
 
 ```sh
 # spec: CLI-JJ-07
@@ -388,8 +388,8 @@ after commit: nothing above
   move it with `jj bookmark set NAME -r @-`, which also creates a missing bookmark.
 - **Conflicts are stored.** A rebase or merge that conflicts exits 0 and records the conflict in
   the commit and its descendants; find them with `conflicts()`.
-- **Undo.** `jj undo` takes back the last operation, whatever it was; in jj 0.46 `jj op undo` no
-  longer exists.
+- **Undo.** `jj undo` takes back the last operation, whatever it was; in jj 0.46 and 0.47 `jj op undo`
+  no longer exists.
 - **Diff format.** `jj diff` is not a patch; use `jj diff --git` for one.
 - **Paths that match nothing.** `jj commit -m MSG PATH` with a mistyped PATH warns on standard error,
   exits 0 and makes an empty commit.
@@ -401,7 +401,7 @@ after commit: nothing above
 - **Finding leftovers.** `jj log -r '@ ~ empty()'` prints something only when the working copy has
   changes.
 - **Pager.** On a terminal jj pages long output and colours it; in a pipe it does neither.
-- **Version.** The examples were checked with `jj 0.46.0`; commands change between versions
+- **Version.** The examples were checked with `jj 0.47.1`; commands change between versions
   (`jj op undo` became `jj undo`).
 
 ## When to keep the classic command

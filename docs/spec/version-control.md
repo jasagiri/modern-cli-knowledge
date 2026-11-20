@@ -10,7 +10,7 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-JJ-04 | D3 | The change ID survives a rewrite and the commit ID changes | 例 |
 | CLI-JJ-05 | D4 | A bookmark does not follow new commits; `jj bookmark set NAME -r @-` moves it | 例 |
 | CLI-JJ-06 | D5 | A conflicting rebase exits 0, stores the conflict in the commit and its descendants, and `conflicts()` finds them | 例 |
-| CLI-JJ-07 | D6 | `jj undo` takes back the last operation, `abandon` included, and `jj op undo` exits 2 in jj 0.46 | 例 |
+| CLI-JJ-07 | D6 | `jj undo` takes back the last operation, `abandon` included, and `jj op undo` exits 2 in jj 0.46 and 0.47 | 例 |
 | CLI-JJ-08 | D7 | `jj diff` is not a patch and `jj diff --git` is | 例 |
 | CLI-JJ-09 | D8 | A path that matches nothing makes `jj commit -m MSG PATH` exit 0 with an empty commit | 例 |
 | CLI-JJ-10 | D9 | `JJ_EDITOR=true` lets `jj split FILE` run without a terminal, FILE in the first commit and the rest left in the working copy | 例 |
@@ -18,7 +18,7 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-JJ-12 | D11 | `jj commit` does not run git hooks | 例 |
 | CLI-JJ-13 | D12 | `jj log -r '@ ~ empty()'` prints the working copy only when it has changes | 例 |
 | CLI-JJ-14 | D13 | On a terminal jj pages and colours long output; in a pipe it does neither | 本文のみ (端末: a pager and colour need a terminal) |
-| CLI-JJ-15 | D14 | The examples were checked with jj 0.46.0, and commands change between versions | 本文のみ (版: the version is checked by MCLI-VER-01 in docs/tool-versions.md, not by an example) |
+| CLI-JJ-15 | D14 | The examples were checked with jj 0.47.1, and commands change between versions | 本文のみ (版: the version is checked by MCLI-VER-01 in docs/tool-versions.md, not by an example) |
 | CLI-JJ-16 | K1 | Keep git for scripts, CI jobs and machines others run | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-JJ-17 | K2 | In a repository whose checks are git hooks, run them yourself or commit with git | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-JJ-18 | K3 | Use git for submodules, LFS and other features jj does not handle | 本文のみ (助言: advice on when to choose, not a result) |
