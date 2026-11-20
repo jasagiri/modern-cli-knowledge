@@ -155,6 +155,16 @@ yq -e '.nope' config/app.yaml
 null
 ```
 
+To compare a value across a JSON and a YAML file, print both as compact JSON and compare the strings
+(list order counts; add `-S` to jq and `sort_keys(..)` to yq when key order should not):
+
+```sh
+[ "$(jq -c '.ports' config/app.json)" = "$(yq -o=json -I=0 '.ports' config/app.yaml)" ] && echo agree
+```
+```text
+agree
+```
+
 ## Differences that change results
 
 - **Output format follows the input.** `yq '.name' config/app.json` prints `"demo"` (JSON in, JSON

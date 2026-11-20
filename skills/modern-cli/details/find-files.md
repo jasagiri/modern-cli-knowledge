@@ -73,6 +73,40 @@ src/main.nim
 src/util.nim
 ```
 
+Inside a repository, `-H -I` also lists everything under `.git` (measured with fd 10.5.0:
+`.git/HEAD` appears). To list every file, ignored and hidden ones included, but not `.git`, exclude
+it by name with `-E`; the classic form prunes it and strips the `./` that `find` prints:
+
+```sh classic
+find . -name .git -prune -o -type f -print | sed 's|^\./||' | LC_ALL=C sort
+```
+```sh
+# spec: CLI-FD-01
+fd -t f -H -I -E .git . | LC_ALL=C sort
+```
+```text
+.env.example
+.gitignore
+.hidden/secret.txt
+README.md
+build/out.txt
+config/app.json
+config/app.yaml
+data/blob.bin
+data/people.json
+debug.log
+notes/meeting notes.txt
+notes/todo.txt
+notes/日本語.txt
+src/legacy.py
+src/main.nim
+src/util.nim
+```
+
+To print a count next to each name, read the names with `while IFS= read -r f` (spaces stay
+intact; a name containing a newline does not) and strip the spaces BSD `wc -l < "$f"` pads its
+count with (`| tr -d ' '`).
+
 By extension, and by glob on the name (`-g`):
 
 ```sh

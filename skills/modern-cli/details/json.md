@@ -78,6 +78,16 @@ jq -c 'group_by(.team) | map({team: .[0].team, n: length})' data/people.json
 [{"team":"core","n":2},{"team":"web","n":1}]
 ```
 
+Filter, then sort (`sort_by(-.age)` puts the oldest first; `sort_by(.age)` the youngest):
+
+```sh
+jq -r 'map(select(.team == "core")) | sort_by(-.age) | .[].name' data/people.json
+```
+```text
+Carol
+Alice
+```
+
 Use the exit status with `-e`: it is 1 when the last output is `false` or `null`, and 4 when there
 was no output at all:
 
