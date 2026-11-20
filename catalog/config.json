@@ -181,6 +181,14 @@
    ]
   },
   {
+   "url": "https://github.com/jj-vcs/jj",
+   "title": "Jujutsu (jj)",
+   "section": [
+    "Tool manuals",
+    "jj"
+   ]
+  },
+  {
    "url": "https://pubs.opengroup.org/onlinepubs/9799919799/idx/utilities.html",
    "title": "POSIX.1-2024 Shell and Utilities: utilities",
    "section": [

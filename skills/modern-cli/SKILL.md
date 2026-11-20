@@ -1,6 +1,6 @@
 ---
 name: modern-cli
-description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq, yq, xh, delta, hyperfine, fzf) instead of grep, find, sed, cat, ls, du, curl, diff and time when working interactively in a repository, knowing how their results differ (ignored and hidden files, regex dialect, output order, standard input, in-place editing, exit status) and when the classic POSIX command is still the right one (portable scripts, CI images, servers without the tools).
+description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq, yq, xh, delta, hyperfine, fzf, jj) instead of grep, find, sed, cat, ls, du, curl, diff, time and git when working interactively in a repository, knowing how their results differ (ignored and hidden files, regex dialect, output order, standard input, in-place editing, exit status) and when the classic POSIX command is still the right one (portable scripts, CI images, servers without the tools).
 ---
 
 # Modern command-line tools
@@ -14,6 +14,7 @@ description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq,
 | you need every file, ignored or hidden ones included | classic, or the modern tool with its "search everything" flags (`rg -uuu`, `fd -H -I`) |
 | the output is parsed by another program | a format meant for programs: `rg --json` (or `rg -H -n`), `fd -0`, `jq -c`, `hyperfine --export-json`, `procs --json`, `duf -json` (it ignores `-only` and paths: filter with jq) |
 | the tool is not installed | do not install it as a side effect; use the classic command |
+| a repository that already has `.jj` | jj for recording and rewriting changes; git where a script, hook or CI job expects it |
 
 ## Tasks
 
@@ -37,6 +38,7 @@ description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq,
 | jump to a directory | `cd` | `zoxide` | [details/navigate.md](details/navigate.md) |
 | short command help | `man` | `tldr` | [details/command-help.md](details/command-help.md) |
 | watch system load | `top` | `btop` | [details/monitor.md](details/monitor.md) |
+| record and rewrite changes | `git` | `jj` | [details/version-control.md](details/version-control.md) |
 
 Every page's examples are run by the tests. Commands whose output depends on the machine, the
 network or a terminal (the process table of `procs`, the tables of `duf`, the screen of `btop`,

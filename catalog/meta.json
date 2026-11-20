@@ -4,18 +4,18 @@
   "depthLimit": 2,
   "maxLinksPerExpansion": 2000,
   "counts": {
-    "sources": 11041,
-    "relevance.core": 378,
+    "sources": 11042,
+    "relevance.core": 379,
     "relevance.adjacent": 9975,
     "relevance.out": 688,
-    "listings.depth1": 10780,
+    "listings.depth1": 10781,
     "listings.depth2": 460,
     "reach.dead": 17,
     "reach.error": 12,
     "reach.ok": 255,
     "reach.redirected": 61,
     "reach.refused": 8,
-    "reach.unchecked": 10688
+    "reach.unchecked": 10689
   },
   "notFollowed": [
     {
