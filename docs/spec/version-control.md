@@ -25,3 +25,4 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-JJ-19 | D1 | A file tracked before it was ignored stays tracked; `jj file untrack PATH` stops tracking it and keeps the file, and exits 1 for a path that is not ignored | 例 |
 | CLI-JJ-20 | D2 | `jj commit -m MSG PATH` commits only the named paths and leaves the other changes in the new working copy | 例 |
 | CLI-JJ-21 | D4 | `jj bookmark set` creates a bookmark that does not exist | 例 |
+| CLI-JJ-22 | D1 | `jj file untrack` records the removal in the working-copy commit only; the parent keeps the file until `jj squash PATH` moves the removal into it, and the file stays on disk | 例 |

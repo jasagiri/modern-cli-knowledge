@@ -119,6 +119,35 @@ M .gitignore
 app.o
 ```
 
+`jj file untrack` changes only the working-copy commit, where it records the file as deleted; a
+commit that already holds the file keeps it. To take it out of the parent commit too, move that
+deletion into the parent with `jj squash PATH`:
+
+```sh
+# spec: CLI-JJ-22
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null
+mkdir dist && echo obj > dist/app.o
+jj commit -m 'Build by mistake' 2>/dev/null
+printf 'dist/\n' >> .gitignore
+jj file untrack dist/app.o 2>/dev/null
+jj diff --summary
+jj file list -r @- dist
+echo ---
+jj squash dist/app.o 2>/dev/null
+jj file list -r @- dist 2>/dev/null; echo "nothing under dist in @-"
+ls dist
+```
+```text
+M .gitignore
+D dist/app.o
+dist/app.o
+---
+nothing under dist in @-
+app.o
+```
+
 `jj commit -m` gives the working-copy commit its description and starts a new, empty one on top.
 A file created afterwards belongs to the new commit, with no command to add it:
 
@@ -358,6 +387,35 @@ exit 0
 Import the tree
 ```
 
+The steps together: a change to keep and a build file that jj has already tracked. Ignore and
+untrack the build file, commit the `.gitignore` change and the real change separately by path,
+move the bookmark, and check that nothing is left:
+
+```sh
+# spec: CLI-JJ-13 CLI-JJ-19 CLI-JJ-20 CLI-JJ-05
+export JJ_USER=Ada JJ_EMAIL=ada@example.org
+rmdir .git && jj git init 2>/dev/null
+jj commit -m 'Import the tree' 2>/dev/null && jj bookmark create main -r @- 2>/dev/null
+echo more >> README.md && mkdir dist && echo obj > dist/app.o
+jj diff --summary
+printf 'dist/\n' >> .gitignore
+jj file untrack dist/app.o 2>/dev/null
+jj commit -m 'chore: ignore dist' .gitignore 2>/dev/null
+jj commit -m 'docs: extend README' README.md 2>/dev/null
+jj bookmark set main -r @- 2>/dev/null
+echo ---
+jj log --no-graph -r '::main ~ root()' -T 'description.first_line() ++ " [" ++ self.diff().files().map(|f| f.path()).join(" ") ++ "]\n"' | head -n 2
+[ -z "$(jj log --no-graph -r '@ ~ empty()' -T '"x"')" ] && echo clean
+```
+```text
+M README.md
+A dist/app.o
+---
+docs: extend README [README.md]
+chore: ignore dist [.gitignore]
+clean
+```
+
 Before ending a session, check that nothing is left in the working copy. `@ ~ empty()` prints the
 working-copy commit only when it holds changes:
 
@@ -379,7 +437,8 @@ after commit: nothing above
 - **No staging area.** The working copy is a commit that every jj command updates first; a file
   `.gitignore` does not list is tracked as soon as it exists, hidden files and build output
   included. Add build directories to `.gitignore` before running jj; a file tracked before it was
-  ignored stays tracked until `jj file untrack PATH`, which refuses a path that is not ignored.
+  ignored stays tracked until `jj file untrack PATH`, which refuses a path that is not ignored and
+  changes only the working-copy commit (`jj squash PATH` carries the removal into the parent).
 - **Committing.** `jj commit -m` describes the working copy and starts a new empty one; with paths
   it takes only those and leaves the rest in the new working copy. `jj describe` alone stays in the
   same commit, so the next edits join it.
