@@ -70,7 +70,7 @@ would carry a `Status: 未検証 (<reason>)` line; none does now.
 Write the classic command when you do not know the target machine has the tool, and say so when
 you use a modern one in a script. Never pipe a modern tool's decorated output into another
 program; ask for its plain or machine format. In a CI check, branch on the output, not on the
-status: `hits=$(find src -type f -name '*.nim' -exec grep -n PAT /dev/null {} +)` then
-`[ -n "$hits" ]`, after checking that `src` exists (a missing directory also gives empty output),
-because grep's "no match" (1) and a real error look the same to `find`
-(`details/combine.md`).
+status, after checking that `src` exists (a missing directory also gives empty output), because
+grep's "no match" (1) and a real error look the same to `find`. Copy the CI check from
+`details/combine.md` ("When to keep the classic command", the block with `[ $? -le 1 ]`): it
+exits 1 on hits, 0 when clean and 2 when grep fails, and was run on BSD and BusyBox.
