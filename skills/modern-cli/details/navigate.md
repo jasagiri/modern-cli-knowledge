@@ -55,6 +55,25 @@ x
 no match
 ```
 
+Matches are ranked by how often and how recently each directory was recorded, so the same word
+leads elsewhere once the history changes. `z` also leaves out the directory you are in, which
+`zoxide query --exclude` shows:
+
+```sh
+# spec: CLI-ZOXIDE-04
+mkdir -p a/lib b/lib
+zoxide add a/lib; zoxide add b/lib; zoxide add b/lib
+zoxide query lib | sed "s#$(pwd)/##"
+zoxide add a/lib; zoxide add a/lib
+zoxide query lib | sed "s#$(pwd)/##"
+zoxide query --exclude "$(pwd)/a/lib" lib | sed "s#$(pwd)/##"
+```
+```text
+b/lib
+a/lib
+b/lib
+```
+
 `z` itself also works like `cd` on a real path (`z ~/foo`, `z foo/`, `z ..`, `z -`), which needs
 no history. `zoxide query` does not do that: it only searches the database, so a path that was
 never recorded finds nothing:

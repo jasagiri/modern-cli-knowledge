@@ -45,6 +45,23 @@ src/main.nim
 src/util.nim
 ```
 
+A backslash keeps a space inside one term. Without it, `g n` is two terms and also matches
+`config/app.json`; a leading `'` only makes the first term exact:
+
+```sh
+# spec: CLI-FZF-03
+fd -t f . | sort | fzf --filter 'g\ n'
+echo ---
+fd -t f . | sort | fzf --filter "'g n"
+```
+```text
+notes/meeting notes.txt
+---
+notes/meeting notes.txt
+config/app.json
+config/app.yaml
+```
+
 A bar with a space on each side (` | `) means OR: lines that match either term.
 
 ```sh
@@ -146,7 +163,8 @@ fd -t f -0 . notes | fzf --read0 --print0 --filter 日本 | xargs -0 cat
   `.` is a plain character and ` | ` (a bar with spaces on both sides) between terms means OR; a bar
   without spaces is not an operator.
 - **Terms.** A space separates terms that must all match. To search for text that contains a
-  space, escape it with a backslash or quote the whole term with `'`.
+  space, escape it with a backslash (`g\ n`); a leading `'` makes a term exact but does not keep
+  the space.
 - **Order.** The output is sorted by score (ties by line length, then by input position), so it
   differs from the input order and from `grep`. Add `--no-sort` or `--tiebreak=index` when the
   input order must win ties.

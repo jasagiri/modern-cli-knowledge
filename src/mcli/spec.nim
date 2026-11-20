@@ -6,8 +6,12 @@
 ##   箇所  D<n> = the n-th bullet of "Differences that change results", K<n> = the n-th bullet of
 ##         "When to keep the classic command"; every bullet is pointed at by at least one row
 ##   確かめ `例` when an example of the page names the ID in a `# spec:` line, or
-##         `本文のみ (<reason>)` when none does (the output depends on the machine, the network or
-##         a terminal, or the claim is advice, not a result). Text-only IDs leave G1's denominator.
+##         `本文のみ (<category>: <reason>)` when none does. The category is one of
+##         `textOnlyCategories`: 助言 (advice on when to choose, not a result), 版 (the version,
+##         checked by MCLI-VER-01), 端末 (needs a terminal), 通信 (needs the network or a server),
+##         機械 (depends on the machine: its OS, mounts, sizes, users, or tools it lacks), 時間
+##         (depends on measured time or on history), 非決定 (the order changes between runs).
+##         Text-only IDs leave G1's denominator.
 
 import std/[sets, strutils]
 import ./pages
@@ -25,6 +29,7 @@ const
   differencesHeading = "Differences that change results"
   keepHeading = "When to keep the classic command"
   textOnly* = "本文のみ ("
+  textOnlyCategories* = ["助言", "版", "端末", "通信", "機械", "時間", "非決定"]
 
 func cells(line: string): seq[string] {.raises: [].} =
   ## The cells of a table row; `\|` is a bar inside a cell.
@@ -126,10 +131,17 @@ func specErrors*(page: Page; tableText: string): seq[string] {.raises: [].} =
       if r.id notin named: result.add r.id & ": marked 例 but no example names it in a `# spec:` line"
     elif r.check.startsWith(textOnly) and r.check.endsWith(")"):
       let reason = r.check[textOnly.len .. ^2].strip
-      if reason.len == 0: result.add r.id & ": 本文のみ needs a reason"
+      let colon = reason.find(':')
+      let category = (if colon < 0: "" else: reason[0 ..< colon])
+      let why = (if colon < 0: reason else: reason[colon + 1 .. ^1].strip)
+      if why.len == 0:
+        result.add r.id & ": 本文のみ needs a reason"
+      elif category notin textOnlyCategories:
+        result.add r.id & ": 本文のみ needs a category, one of " & textOnlyCategories.join(" ") &
+          ", then \": \" and the reason"
       if r.id in named: result.add r.id & ": marked 本文のみ but an example names it"
     else:
-      result.add r.id & ": 確かめ must be 例 or 本文のみ (<reason>)"
+      result.add r.id & ": 確かめ must be 例 or 本文のみ (<category>: <reason>)"
   for id in named:
     if id notin tableIds: result.add id & ": named by an example but not in the table"
   for i in 1 .. nD:

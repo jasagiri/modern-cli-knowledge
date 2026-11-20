@@ -60,6 +60,26 @@ dust -s -b -P --skip-total -d 1 -n 2 notes && dust -s -b -P --skip-total -d 1 -z
  53B ┌── todo.txt
 ```
 
+Sizes of 1024 bytes and more get a unit. dust uses powers of 1024 (`Ki`), `-o si` powers of 1000
+(`K`) and `-o b` bytes. BSD `du -A` (apparent size) counts 512-byte blocks, and `-k` KiB, both
+rounded up:
+
+```sh
+# spec: CLI-DUST-07
+mkdir big && head -c 3000 /dev/zero > big/zeros.bin
+dust -s -b -P --skip-total big
+dust -s -b -P --skip-total -o si big
+dust -s -b -P --skip-total -o b big
+du -A big/zeros.bin; du -Ak big/zeros.bin
+```
+```text
+2.9Ki ┌── zeros.bin
+3.0K ┌── zeros.bin
+3000B ┌── zeros.bin
+6	big/zeros.bin
+3	big/zeros.bin
+```
+
 Count only the files whose path matches a regex (`-e`; `-v` is the opposite). The directory row
 is then the exact sum of those files:
 

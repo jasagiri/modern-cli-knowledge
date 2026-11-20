@@ -145,6 +145,47 @@ y
 z
 ```
 
+For two paths delta runs `git diff --no-index` when `git` is on `PATH` (the header then starts with
+`diff --git`), and `diff -u` when it is not (the header is diff's `--- old.txt` with a timestamp,
+cut off here). With neither it prints nothing and exits 2. The second command gives delta a `PATH`
+that holds only `diff`; the third one with nothing:
+
+```sh
+# spec: CLI-DELTA-07
+printf 'a\nb\n' > old.txt && printf 'a\nB\n' > new.txt
+d=$(command -v delta) && mkdir only && ln -s "$(command -v diff)" only/diff
+delta --no-gitconfig --color-only old.txt new.txt | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g' | head -n 1
+PATH=$PWD/only "$d" --no-gitconfig --color-only old.txt new.txt | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g' | head -n 1 | cut -f 1
+PATH=/nonexistent "$d" --no-gitconfig old.txt new.txt 2>/dev/null; echo "status $?"
+```
+```text
+diff --git a/old.txt b/new.txt
+--- old.txt
+status 2
+```
+
+The user's git configuration changes delta's output: here a `[delta]` section in `~/.gitconfig`
+turns on line numbers. `--no-gitconfig` ignores it, which is why every example on this page passes
+it:
+
+```sh
+# spec: CLI-DELTA-08
+printf 'a\nb\n' > old.txt && printf 'a\nB\n' > new.txt
+printf '[delta]\n    line-numbers = true\n' > "$HOME/.gitconfig"
+delta old.txt new.txt | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g' | tail -n 3
+echo ---
+delta --no-gitconfig old.txt new.txt | perl -pe 's/\e\[[0-9;]*[A-Za-z]//g' | tail -n 3
+```
+```text
+  1 ⋮  1 │a
+  2 ⋮    │b
+    ⋮  2 │B
+---
+a
+b
+B
+```
+
 As a pager for git, delta is set in the git configuration (`core.pager = delta` and
 `interactive.diffFilter = delta --color-only`), and then `git diff`, `git log -p` and `git show`
 print through it. That setup changes a user's git configuration and shows a pager, so it is
@@ -166,8 +207,9 @@ described here and not run.
   a pipe it reports its own status (0), so `diff … | delta` cannot be used to test for a difference.
   Use `diff -q` or `cmp -s` for that.
 - **Input.** It takes two files, two directories (example below), or a diff on standard input.
-  For two paths delta runs `git diff --no-index` itself, so `git` must be on `PATH`; on a machine
-  without git, pipe `diff -u` (or `diff -ru` for directories) into delta instead.
+  For two paths delta runs `git diff --no-index` when `git` is on `PATH` and `diff -u` otherwise,
+  so the header differs between machines; with neither it exits 2. To get the same input
+  everywhere, pipe `diff -u` (or `diff -ru` for directories) into delta.
 - **Configuration is read from git.** The `[delta]` section of the user's git configuration changes
   colours, line numbers and layout; use `--no-gitconfig` when an output must be reproducible, as the
   examples do.

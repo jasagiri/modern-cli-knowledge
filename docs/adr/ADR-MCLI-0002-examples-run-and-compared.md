@@ -68,3 +68,10 @@ order with `# exit: N` (MCLI-SPEC-01). It names the claims of the page's spec ta
 (`docs/spec/<page>.md`) that the example confirms; the table, its rows marked 例 or 本文のみ, and
 the test that compares both ways are MCLI-SPEC-02 and MCLI-SPEC-03 in `docs/specification.md`.
 The rule above ("`# exit: N` as the first line") now reads: header lines first, in any order.
+
+## 訂正 (2026-11-20)
+
+A row marked 本文のみ now gives a category before its reason, `本文のみ (<category>: <reason>)`,
+from a fixed list (助言, 版, 端末, 通信, 機械, 時間, 非決定) that MCLI-SPEC-02 defines and the test
+enforces. The free-text reason alone did not tell a claim that cannot be run here from one that
+merely had no example yet.

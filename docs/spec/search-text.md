@@ -1,6 +1,6 @@
 # Spec table: search-text
 
-One row per claim of the sections "Differences that change results" (D) and "When to keep the classic command" (K) of `skills/modern-cli/details/search-text.md`. 例 = an example of the page names the ID in a `# spec:` line; 本文のみ = no example does, for the reason given (MCLI-SPEC-02).
+One row per claim of the sections "Differences that change results" (D) and "When to keep the classic command" (K) of `skills/modern-cli/details/search-text.md`. 例 = an example of the page names the ID in a `# spec:` line; 本文のみ = no example does, for the category and reason given (MCLI-SPEC-02).
 
 | ID | 箇所 | 主張 | 確かめ |
 |---|---|---|---|
@@ -13,6 +13,6 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-RG-07 | D7 | rg uses Rust regex, so `rg 'greet('` is an error where basic-regex `grep` takes `(` literally | 例 |
 | CLI-RG-08 | D8 | With no path rg searches standard input when it is a pipe or a file, not the directory | 例 |
 | CLI-RG-09 | D9 | The status is 0 for found, 1 for not found and 2 for an error, for both rg and grep | 例 |
-| CLI-RG-10 | K1 | Keep `grep` in POSIX scripts that must run where rg is not installed | 本文のみ (advice on when to choose, not a result) |
-| CLI-RG-11 | K2 | Keep `grep` when every file must be searched, ignored or not | 本文のみ (advice on when to choose, not a result) |
-| CLI-RG-12 | K3 | Keep `grep` when a script depends on basic-regex semantics or the `./` prefix | 本文のみ (advice on when to choose, not a result) |
+| CLI-RG-10 | K1 | Keep `grep` in POSIX scripts that must run where rg is not installed | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-RG-11 | K2 | Keep `grep` when every file must be searched, ignored or not | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-RG-12 | K3 | Keep `grep` when a script depends on basic-regex semantics or the `./` prefix | 本文のみ (助言: advice on when to choose, not a result) |
