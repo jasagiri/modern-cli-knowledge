@@ -12,10 +12,10 @@
     "listings.depth2": 460,
     "reach.dead": 17,
     "reach.error": 12,
-    "reach.ok": 255,
+    "reach.ok": 256,
     "reach.redirected": 61,
     "reach.refused": 8,
-    "reach.unchecked": 10689
+    "reach.unchecked": 10688
   },
   "notFollowed": [
     {
