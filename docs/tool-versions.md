@@ -29,7 +29,7 @@ differently, the page says so in "Differences that change results"; GNU output i
 | procs | `procs --version` | 1 | `procs 0.14.12` | verified |
 | duf | `brew list --versions duf` | 1 | `duf 0.9.1` | verified |
 | fzf | `fzf --version` | 1 | `0.74.5 (Homebrew)` | verified |
-| gping | `gping --version` | 1 | `gping 1.21.0` | 未検証 (interactive, network) |
+| gping | `gping --version` | 1 | `gping 1.21.0` | verified |
 | jj | `jj --version` | 1 | `jj 0.46.0` | verified |
 | zoxide | `zoxide --version` | 1 | `zoxide 0.10.0` | verified |
 | tldr | `tldr --version` | 1 | `tlrc v1.13.1 (implementing the tldr client specification v2.3)` | verified |
