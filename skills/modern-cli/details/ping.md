@@ -77,8 +77,11 @@ ping exit 0
 
 A script that writes `down` for any non-zero status also reports its own mistakes as `down`. On
 macOS `ping` exits 2 when no reply came, 64 on a usage error and 68 when the host name does not
-resolve; GNU `ping` exits 1 when no reply came and 2 on other errors. Test for the no-reply status
-and treat the others as a failure of the check:
+resolve; GNU `ping` exits 1 when no reply came and 2 on other errors. A script for one platform
+tests for its no-reply status and treats the others as a failure of the check. A script for both
+cannot tell the two apart by the status (2 means no reply on macOS and an error with GNU): treat
+0 as up and anything else as down, and keep ping's standard error and status in the log so an
+error is visible:
 
 ```sh
 # spec: CLI-GPING-12
