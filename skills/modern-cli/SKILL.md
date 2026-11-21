@@ -1,6 +1,6 @@
 ---
 name: modern-cli
-description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq, yq, xh, delta, hyperfine, fzf, jj, gping) instead of grep, find, sed, cat, ls, du, curl, diff, time, git and ping when working interactively in a repository, knowing how their results differ (ignored and hidden files, regex dialect, output order, standard input, in-place editing, exit status) and when the classic POSIX command is still the right one (portable scripts, CI images, servers without the tools).
+description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq, yq, xh, delta, hyperfine, fzf, jj, gping) instead of grep, find, sed, cat, ls, du, curl, diff, time, git and ping when working interactively in a repository, knowing how their results differ (ignored and hidden files, regex dialect, output order, standard input, in-place editing, exit status) and when the classic POSIX command is still the right one (portable scripts, CI images, servers without the tools). Also covers the everyday classic tools that have no modern replacement here (sort, uniq, cut, tr, awk, wc, head, tail, comm, join, paste; cp, mv, rm, mkdir, ln, touch; chmod, chown, umask; tar; ssh, scp, ssh-keygen; kill and signals), with the BSD (macOS) and GNU differences that change results.
 ---
 
 # Modern command-line tools
@@ -40,10 +40,16 @@ description: Use modern Unix command-line tools (rg, fd, sd, bat, eza, dust, jq,
 | watch system load | `top` | `btop` | [details/monitor.md](details/monitor.md) |
 | record and rewrite changes | `git` | `jj` | [details/version-control.md](details/version-control.md) |
 | watch latency to hosts | `ping` | `gping` | [details/ping.md](details/ping.md) |
+| sort, count, cut and join lines and columns | `sort`, `uniq`, `cut`, `tr`, `awk`, `wc`, `head`, `tail`, `nl`, `comm`, `join`, `paste` | none | [details/text-columns.md](details/text-columns.md) |
+| copy, move, remove and link files | `cp`, `mv`, `rm`, `mkdir`, `ln`, `touch` | none | [details/file-operations.md](details/file-operations.md) |
+| permissions and ownership | `chmod`, `chown`, `chgrp`, `umask` | none | [details/permissions.md](details/permissions.md) |
+| create, list and extract archives | `tar` | none | [details/archives.md](details/archives.md) |
+| run commands and copy files on other machines | `ssh`, `scp`, `ssh-keygen` | none | [details/remote.md](details/remote.md) |
+| stop a process, send a signal | `kill` | none (find the PID with `procs`) | [details/processes.md](details/processes.md) |
 
 Every page's examples are run by the tests. Commands whose output depends on the machine, the
 network or a terminal (the process table of `procs`, the tables of `duf`, the screens of `btop` and `gping`,
-`z` changing the directory of a shell, the pages of `tldr`) are described in the text, not run;
+`z` changing the directory of a shell, the pages of `tldr`, an `ssh` connection) are described in the text, not run;
 the examples beside them check what does not depend on those. A page that cannot run any command
 would carry a `Status: 未検証 (<reason>)` line; none does now.
 

@@ -13,6 +13,7 @@ the parent and child relationship, with colour and units chosen for people.
 | `ps aux \| grep nginx` | `procs nginx` |
 | `ps -ef --forest` (GNU) | `procs --tree` |
 | `watch ps aux` | `procs --watch` |
+| `kill PID`, `kill -KILL PID` | none (keep `kill`; find the PID with `procs`) |
 
 ## Commands
 
@@ -95,6 +96,109 @@ only: 5
 plain: 0
 ```
 
+### Stop a process: kill and signals
+
+procs only shows processes; stopping one is `kill`, which sends a signal. Every example below starts
+its own `sleep` in the background, signals that process by the PID the shell keeps in `$!`, and reads
+the status with `wait PID`. A process ended by a signal has the status 128 plus the signal number
+(`kill -l 143` names it): `kill` sends TERM (15) by default, so the status is 143. KILL (9) gives
+137, HUP (1) 129 and INT (2) 130:
+
+```sh
+# spec: CLI-PROCS-11
+sleep 30 & P=$!; kill $P; wait $P; echo "status: $?"
+sleep 30 & P=$!; kill -KILL $P; wait $P; echo "status: $?"
+sleep 30 & P=$!; kill -HUP $P; wait $P; echo "status: $?"
+sleep 30 & P=$!; kill -INT $P; wait $P; echo "status: $?"
+kill -l 143
+```
+```text
+status: 143
+status: 137
+status: 129
+status: 130
+TERM
+```
+
+TERM asks the process to stop and it may catch the signal (here a `trap` runs a handler, which sets
+the status 3) or ignore it (`trap "" TERM`: the process is still alive). KILL (and STOP) cannot be
+caught or ignored, so `kill -KILL` is the last resort after TERM has failed:
+
+```sh
+# spec: CLI-PROCS-12
+sh -c 'sleep 30 & c=$!; trap "kill $c; echo got TERM; exit 3" TERM; wait $c' & P=$!
+sleep 1; kill $P; wait $P; echo "status: $?"
+sh -c 'trap "" TERM; sleep 2' & P=$!
+sleep 0.3; kill $P; kill -0 $P && echo still-alive
+kill -KILL $P; wait $P; echo "status: $?"
+```
+```text
+got TERM
+status: 3
+still-alive
+status: 137
+```
+
+Signal 0 sends nothing: `kill -0 PID` only reports whether the process exists and may be signalled
+(status 0) or not (status 1, and `kill` says `No such process` on standard error). The status of a
+process that has gone is therefore 1 for any later `kill`:
+
+```sh
+# spec: CLI-PROCS-13
+sleep 30 & P=$!
+kill -0 $P; echo "alive: $?"
+kill $P; wait $P
+kill -0 $P 2>/dev/null; echo "gone: $?"
+true & Q=$!; wait $Q
+kill $Q 2>/dev/null; echo "finished: $?"
+sleep 30 & R=$!; kill -s FOO $R 2>/dev/null; echo "bad name: $?"
+kill $R; wait $R; echo "ended: $?"
+```
+```text
+alive: 0
+gone: 1
+finished: 1
+bad name: 1
+ended: 143
+```
+
+The names `HUP` `INT` `QUIT` `ABRT` `KILL` `ALRM` `TERM` and their numbers 1, 2, 3, 6, 9, 14, 15 are
+fixed by POSIX and `kill -l NUMBER` prints the name, while the numbers of the other signals differ
+between systems (`USR1` is 30 here). The shell builtin `kill` also takes job numbers (`%1`), and
+`wait` without a PID waits for all children and returns 0, whatever their status was; with a PID it
+returns that process's status:
+
+```sh
+# spec: CLI-PROCS-14 CLI-PROCS-15
+kill -l 15; kill -l 30
+sleep 30 & a=$!; sleep 30 & b=$!
+kill %1 %2; wait; echo "wait: $?"
+sleep 30 & a=$!; sleep 30 & b=$!
+kill $a; wait $a; echo "a: $?"
+kill $b; wait; echo "wait: $?"
+```
+```text
+TERM
+USR1
+wait: 0
+a: 143
+wait: 0
+```
+
+STOP freezes a process and CONT resumes it. A stopped process has the state `T` in the `STAT` column
+of `ps`:
+
+```sh
+# spec: CLI-PROCS-16
+sleep 30 & P=$!
+kill -STOP $P; ps -o stat= -p $P | cut -c1
+kill -CONT $P; kill $P; wait $P; echo "status: $?"
+```
+```text
+T
+status: 143
+```
+
 ## Differences that change results
 
 - **Keyword search is per column.** `ps aux | grep nginx` matches any text in the line, including
@@ -123,6 +227,22 @@ plain: 0
   command line everywhere, but the available columns depend on the OS (Cgroup is Linux only,
   Docker and UdpPort are not available on Windows and FreeBSD), and its README lists Linux and
   Windows as supported and macOS and FreeBSD as experimental.
+- **`kill` sends TERM and the status shows the signal.** The default signal is TERM (15), which a
+  process may catch or ignore; a process ended by a signal has the status 128 plus the number (TERM
+  143, KILL 137, HUP 129, INT 130). KILL and STOP cannot be caught or ignored.
+- **Signal 0 and missing processes.** `kill -0 PID` sends nothing and reports only whether the
+  process exists (status 0, otherwise 1 with `No such process`); `kill` of a finished process or an
+  unknown signal name has status 1. A PID can be reused after its process ended, so a PID kept for
+  a long time may name another process.
+- **Names and numbers.** The names `HUP` `INT` `QUIT` `ABRT` `KILL` `ALRM` `TERM` and the numbers
+  1, 2, 3, 6, 9, 14, 15 are the same on every system; the other numbers are not (`USR1` is 30 on
+  macOS and 10 on Linux), so write names, not numbers.
+- **`wait` and job numbers.** The builtin `kill` accepts `%1` job numbers, which the program
+  `/bin/kill` does not. `wait PID` returns the status of that process, `wait` alone returns 0 for
+  any children; stopped processes (STOP) show `T` in `ps` until CONT.
+- **`pkill` and `pgrep` match patterns.** `pkill -f PATTERN` signals every process of the user whose
+  command line matches, so a pattern that is too short kills processes that were not meant; use the
+  PID of a process you started (`$!`).
 
 ## When to keep the classic command
 
@@ -130,6 +250,10 @@ plain: 0
   installed: `ps` is always there.
 - When a fixed, parseable format is needed and `--json` is not an option: `ps -o pid=,comm= -p PID`.
 - When a column procs does not show, or the exact `ps` field, is the point.
+- To stop a process, `kill` stays the tool, since procs only lists. Send TERM first, wait for the
+  process to end, and use `kill -KILL` only when it did not.
+- In a script, signal the PID that the script got from `$!`, not a name found by `pgrep` or
+  `pkill`, which can hit other processes.
 
 ## Pitfalls
 

@@ -14,3 +14,15 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-PROCS-08 | K1 | Keep `ps` in scripts and one-liners where procs is not installed | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-PROCS-09 | K2 | Keep `ps -o pid=,comm= -p PID` when a fixed, parseable format is needed and `--json` is not an option | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-PROCS-10 | K3 | Keep `ps` when a column procs does not show is the point | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-PROCS-11 | D8 | `kill` sends TERM by default, and a process ended by a signal has the status 128 plus its number (TERM 143, KILL 137, HUP 129, INT 130) | 例 |
+| CLI-PROCS-12 | D8 | TERM can be caught or ignored and KILL cannot | 例 |
+| CLI-PROCS-13 | D9 | `kill -0 PID` sends nothing and reports whether the process exists; `kill` of a finished process or an unknown signal name has status 1 | 例 |
+| CLI-PROCS-14 | D10 | `kill -l NUMBER` prints the name; `HUP` `INT` `QUIT` `ABRT` `KILL` `ALRM` `TERM` are fixed and `USR1` is 30 here | 例 |
+| CLI-PROCS-15 | D11 | The builtin `kill` accepts `%1` job numbers, `wait PID` returns that process's status and `wait` alone returns 0 | 例 |
+| CLI-PROCS-16 | D11 | A stopped process shows `T` in `ps` until CONT | 例 |
+| CLI-PROCS-17 | D9 | A PID can be reused after its process ended, so a PID kept for a long time may name another process | 本文のみ (非決定: PID reuse cannot be shown in a fixed example) |
+| CLI-PROCS-18 | D10 | `USR1` is 10 on Linux | 本文のみ (機械: no Linux on the checking machine) |
+| CLI-PROCS-19 | D11 | The program `/bin/kill` does not accept `%1` job numbers | 本文のみ (機械: not run, the example uses the shell builtin) |
+| CLI-PROCS-20 | D12 | `pkill -f PATTERN` signals every process of the user whose command line matches | 本文のみ (機械: an example would signal processes it did not start) |
+| CLI-PROCS-21 | K4 | Use `kill`, TERM first and `kill -KILL` only when TERM failed, to stop a process | 本文のみ (助言: advice on when to choose, not a result) |
+| CLI-PROCS-22 | K5 | In a script signal the PID from `$!`, not a name found by `pgrep` or `pkill` | 本文のみ (助言: advice on when to choose, not a result) |

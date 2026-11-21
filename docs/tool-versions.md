@@ -8,6 +8,8 @@ whose output changed, then update the row.
 `duf -version` prints only `duf (built from source)` and `btop --version` prints terminal escape codes, so
 their rows use another command that names the version (Homebrew, and the first line of btop's default
 config).
+`tar --version` (bsdtar 3.5.3, libarchive 3.7.4 on the checking machine) ends its line with a space,
+which a table cell cannot hold, so tar has no row.
 
 The classic commands on the checking machine are the BSD ones of macOS. Where GNU behaves
 differently, the page says so in "Differences that change results"; GNU output is not checked here.
@@ -34,3 +36,4 @@ differently, the page says so in "Differences that change results"; GNU output i
 | zoxide | `zoxide --version` | 1 | `zoxide 0.10.0` | verified |
 | tldr | `tldr --version` | 1 | `tlrc v1.13.1 (implementing the tldr client specification v2.3)` | verified |
 | btop | `btop --default-config` | 1 | `#? Config file for btop v.1.4.8` | verified |
+| ssh | `ssh -V` | 1 | `OpenSSH_10.5p1, LibreSSL 3.3.6` | verified |
