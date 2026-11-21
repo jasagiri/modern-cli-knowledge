@@ -1,7 +1,7 @@
 ## E tests for docs/specification.md MCLI-VER-01 (the recorded tool versions).
 
 import std/[os, strutils, unittest]
-import mcli/runner
+import shell_pages/runner
 
 const root = currentSourcePath().parentDir.parentDir
 

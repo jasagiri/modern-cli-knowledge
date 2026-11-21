@@ -1,15 +1,16 @@
 ## E tests for docs/specification.md MCLI-DATA-01…MCLI-DATA-03 (the dataset).
 
 import std/[algorithm, json, os, strutils, unittest]
-import mcli/dataset
+import shell_pages/dataset
+import mcli/profile
 
 const root = currentSourcePath().parentDir.parentDir
 
 proc committedPages(): seq[(string, string)] =
   var names: seq[string]
-  for f in walkFiles(root / pagesDir / "*.md"): names.add f.extractFilename
+  for f in walkFiles(root / mcliProfile.pagesDir / "*.md"): names.add f.extractFilename
   names.sort()
-  for n in names: result.add (n, readFile(root / pagesDir / n))
+  for n in names: result.add (n, readFile(root / mcliProfile.pagesDir / n))
 
 const verified = """# Find: tool
 ## Intent
@@ -55,19 +56,19 @@ Catalog: 0123456789abcdef.
 suite "dataset":
   # SPEC: MCLI-DATA-01
   test "MCLI-DATA-01 Given the committed pages, when the dataset is rebuilt, then it equals the committed files":
-    let (records, chat) = render(committedPages())
+    let (records, chat) = render(mcliProfile, committedPages())
     check records == readFile(root / "dataset" / "records.jsonl")
     check chat == readFile(root / "dataset" / "chat.jsonl")
 
   # SPEC: MCLI-DATA-01
   test "MCLI-DATA-01 Given the same pages in another order, when rendered twice, then the bytes are equal":
-    let a = render([("a.md", verified), ("b.md", verified)])
-    let b = render([("b.md", verified), ("a.md", verified)])
+    let a = render(mcliProfile, [("a.md", verified), ("b.md", verified)])
+    let b = render(mcliProfile, [("b.md", verified), ("a.md", verified)])
     check a == b
 
   # SPEC: MCLI-DATA-02
   test "MCLI-DATA-02 Given a verified page, when derived, then each kind comes from its block and the exit status is stated":
-    let rs = recordsOf("find.md", verified)
+    let rs = recordsOf(mcliProfile, "find.md", verified)
     var kinds: seq[string]
     for r in rs: kinds.add r.kind
     check kinds == @["explain", "keep-classic", "task", "rewrite", "pitfall"]
@@ -86,7 +87,7 @@ suite "dataset":
   test "MCLI-DATA-02 Given an example with a spec line, when derived, then its record lists the ID and no output shows the line":
     let page = verified.replace("```sh\nls\n```", "```sh\n# spec: CLI-FIND-01\nls\n```").replace(
       "## When to keep the classic command\nIn scripts.", "## When to keep the classic command\nIn scripts:\n```sh\n# spec: CLI-FIND-02\nls\n```")
-    let rs = recordsOf("find.md", page)
+    let rs = recordsOf(mcliProfile, "find.md", page)
     check rs[2].specIds == @["MCLI-EX-01", "CLI-FIND-01"]
     for r in rs:
       check "# spec:" notin r.output
@@ -95,7 +96,7 @@ suite "dataset":
   # SPEC: MCLI-DATA-02
   test "MCLI-DATA-02 Given a page marked 未検証, when derived, then it gives no record":
     let page = verified.replace("# Find: tool\n", "# Find: tool\nStatus: 未検証 (not installed)\n")
-    check recordsOf("find.md", page).len == 0
+    check recordsOf(mcliProfile, "find.md", page).len == 0
 
   # SPEC: MCLI-DATA-02
   test "MCLI-DATA-02 Given the committed dataset, when read, then no record comes from an unverified page":

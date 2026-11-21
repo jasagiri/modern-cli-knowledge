@@ -7,7 +7,7 @@
 ## Exit 0 when the command ran, 2 on a usage error.
 
 import std/os
-import mcli/runner
+import shell_pages/runner
 
 proc main() =
   if paramCount() != 1:

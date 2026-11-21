@@ -2,7 +2,8 @@
 ## required shape, and every example prints its ```text in a fresh copy of fixtures/tree.
 
 import std/[json, os, sets, strutils, unittest]
-import mcli/[pages, runner]
+import shell_pages/[pages, runner]
+import mcli/profile
 
 const root = currentSourcePath().parentDir.parentDir
 let detailsDir = root / "skills" / "modern-cli" / "details"
@@ -25,7 +26,7 @@ suite "pages":
     for f in detailPages():
       let page = parsePage(readFile(f))
       check page.title.len > 0
-      let errs = sectionOrderErrors(page)
+      let errs = sectionOrderErrors(page, mcliProfile)
       if errs.len > 0: echo f.extractFilename, ": ", errs
       check errs.len == 0
 
@@ -34,7 +35,7 @@ suite "pages":
   test "MCLI-PAGE-02 Given every details page, when its blocks are paired, then it follows the block rules and its status":
     for f in detailPages():
       let page = parsePage(readFile(f))
-      let ex = examplesOf(page)
+      let ex = examplesOf(page, mcliProfile)
       for e in ex.errors: echo f.extractFilename, ":", e.line, ": ", e.message
       check ex.errors.len == 0
       if page.status.len == 0:
@@ -80,7 +81,7 @@ suite "examples":
   test "MCLI-EX-01 Given every example, when run in a fresh copy of the fixture, then it prints its text and ends with its status":
     var count = 0
     for f in detailPages():
-      for ex in examplesOf(parsePage(readFile(f))).examples:
+      for ex in examplesOf(parsePage(readFile(f)), mcliProfile).examples:
         inc count
         let outcome = checkExample(fixture, work, ex)
         if not outcome.ok: echo f.extractFilename, ": ", outcome.message

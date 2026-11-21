@@ -4,7 +4,8 @@
 ## No network, no clock (MCLI-DATA-01). Exit 0 on success, 2 on a usage error.
 
 import std/[algorithm, os, parseopt]
-import mcli/dataset
+import shell_pages/dataset
+import mcli/profile
 
 proc main() =
   var root = getCurrentDir()
@@ -14,11 +15,11 @@ proc main() =
       stderr.writeLine "usage: dataset_build [--root:<repo>]"
       quit 2
   var names: seq[string]
-  for f in walkFiles(root / pagesDir / "*.md"): names.add f.extractFilename
+  for f in walkFiles(root / mcliProfile.pagesDir / "*.md"): names.add f.extractFilename
   names.sort()
   var pagesIn: seq[(string, string)]
-  for n in names: pagesIn.add (n, readFile(root / pagesDir / n))
-  let (records, chat) = render(pagesIn)
+  for n in names: pagesIn.add (n, readFile(root / mcliProfile.pagesDir / n))
+  let (records, chat) = render(mcliProfile, pagesIn)
   createDir(root / "dataset")
   writeFile(root / "dataset" / "records.jsonl", records)
   writeFile(root / "dataset" / "chat.jsonl", chat)

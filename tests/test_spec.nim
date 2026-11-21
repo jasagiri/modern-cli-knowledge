@@ -1,8 +1,9 @@
 ## E tests for docs/specification.md MCLI-SPEC-02 and MCLI-SPEC-03 (the spec table of each page,
-## docs/spec/<page>.md, against the examples of the page, src/mcli/spec.nim).
+## docs/spec/<page>.md, against the examples of the page, nim-shell-pages src/shell_pages/spec.nim).
 
 import std/[os, strutils, unittest]
-import mcli/[pages, spec]
+import shell_pages/[pages, spec]
+import mcli/profile
 
 const root = currentSourcePath().parentDir.parentDir
 
@@ -45,51 +46,51 @@ const table = """# Spec: rg
 suite "spec table":
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given a table that matches its page, when checked, then there are no errors":
-    check specErrors(parsePage(page), table).len == 0
+    check specErrors(parsePage(page), mcliProfile, table).len == 0
 
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given an ID with no example marked 例, when checked, then the ID is named":
     let t = table.replace("CLI-RG-02 | D2 | two | 本文のみ (機械: machine dependent)", "CLI-RG-02 | D2 | two | 例")
-    let errs = specErrors(parsePage(page), t)
+    let errs = specErrors(parsePage(page), mcliProfile, t)
     check errs.len == 1
     check "CLI-RG-02" in errs[0]
 
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given an example that names an ID missing from the table, when checked, then the ID is named":
     let p = page.replace("# spec: CLI-RG-01", "# spec: CLI-RG-01 CLI-RG-09")
-    let errs = specErrors(parsePage(p), table)
+    let errs = specErrors(parsePage(p), mcliProfile, table)
     check errs.len == 1
     check "CLI-RG-09" in errs[0]
 
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given a text-only row whose ID an example names, when checked, then it is an error":
     let p = page.replace("# spec: CLI-RG-01", "# spec: CLI-RG-01 CLI-RG-02")
-    check specErrors(parsePage(p), table).len == 1
+    check specErrors(parsePage(p), mcliProfile, table).len == 1
 
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given a text-only row without a reason, a duplicate ID or a wrong tool, when checked, then each is an error":
-    check specErrors(parsePage(page), table.replace("本文のみ (機械: machine dependent)", "本文のみ ()")).len == 1
-    check specErrors(parsePage(page), table.replace("本文のみ (機械: machine dependent)", "本文のみ (機械: )")).len == 1
+    check specErrors(parsePage(page), mcliProfile, table.replace("本文のみ (機械: machine dependent)", "本文のみ ()")).len == 1
+    check specErrors(parsePage(page), mcliProfile, table.replace("本文のみ (機械: machine dependent)", "本文のみ (機械: )")).len == 1
 
   # SPEC: MCLI-SPEC-02
   test "MCLI-SPEC-02 Given a text-only reason without a listed category, when checked, then the row is named":
-    let missing = specErrors(parsePage(page), table.replace("(機械: machine dependent)", "(machine dependent)"))
+    let missing = specErrors(parsePage(page), mcliProfile, table.replace("(機械: machine dependent)", "(machine dependent)"))
     check missing.len == 1
     check "CLI-RG-02" in missing[0]
-    let unknown = specErrors(parsePage(page), table.replace("(機械: machine dependent)", "(気分: machine dependent)"))
+    let unknown = specErrors(parsePage(page), mcliProfile, table.replace("(機械: machine dependent)", "(気分: machine dependent)"))
     check unknown.len == 1
     check "CLI-RG-02" in unknown[0]
-    for cat in textOnlyCategories:
-      check specErrors(parsePage(page), table.replace("(機械: machine dependent)", "(" & cat & ": x)")).len == 0
-    check specErrors(parsePage(page), table.replace("CLI-RG-03", "CLI-RG-02")).len >= 1
-    check specErrors(parsePage(page), table.replace("CLI-RG-03", "CLI-FD-03")).len == 1
+    for cat in mcliProfile.textOnlyCategories:
+      check specErrors(parsePage(page), mcliProfile, table.replace("(機械: machine dependent)", "(" & cat & ": x)")).len == 0
+    check specErrors(parsePage(page), mcliProfile, table.replace("CLI-RG-03", "CLI-RG-02")).len >= 1
+    check specErrors(parsePage(page), mcliProfile, table.replace("CLI-RG-03", "CLI-FD-03")).len == 1
 
   # SPEC: MCLI-SPEC-03
   test "MCLI-SPEC-03 Given a bullet no row points at or a row pointing past the bullets, when checked, then it is named":
-    let a = specErrors(parsePage(page), table.replace("| CLI-RG-03 | K1 | keep | 本文のみ (助言: a policy, not a result) |\n", ""))
+    let a = specErrors(parsePage(page), mcliProfile, table.replace("| CLI-RG-03 | K1 | keep | 本文のみ (助言: a policy, not a result) |\n", ""))
     check a.len == 1
     check "K1" in a[0]
-    let b = specErrors(parsePage(page), table.replace("| D2 |", "| D3 |"))
+    let b = specErrors(parsePage(page), mcliProfile, table.replace("| D2 |", "| D3 |"))
     check b.len >= 1
 
 suite "spec table cells":
@@ -111,7 +112,7 @@ suite "committed spec tables":
       let tablePath = root / "docs" / "spec" / stem & ".md"
       check fileExists(tablePath)
       if not fileExists(tablePath): continue
-      let errs = specErrors(parsePage(readFile(f)), readFile(tablePath))
+      let errs = specErrors(parsePage(readFile(f)), mcliProfile, readFile(tablePath))
       for e in errs: echo stem, ": ", e
       check errs.len == 0
       inc checked
