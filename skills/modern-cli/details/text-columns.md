@@ -80,7 +80,9 @@ b
 
 `uniq` collapses only neighbouring equal lines, so it needs sorted input; `-c` prefixes the count
 (BSD pads it to a width of 4), `-d` prints one line of each repeated run, `-u` only the lines that
-occur once. The count of each distinct line, most frequent first, is `sort | uniq -c | sort -rn`:
+occur once. The count of each distinct line, most frequent first, is `sort | uniq -c | sort -rn`.
+`-rn` leaves the order of equal counts to the implementation; name the tie-break as a second key
+(`sort -k1,1nr -k2,2`) when the order must be the same everywhere, for example for the top N words:
 
 ```sh
 # spec: CLI-TEXT-03
@@ -89,6 +91,8 @@ echo --
 printf 'b\na\nb\n' | sort | uniq -c
 echo --
 printf 'b\na\nb\n' | sort | uniq -c | sort -rn
+echo --
+printf 'b\na\nc\nb\nc\n' | sort | uniq -c | sort -k1,1nr -k2,2
 echo --
 printf 'a\na\nb\n' | uniq -d
 printf 'a\na\nb\n' | uniq -u
@@ -102,6 +106,10 @@ printf 'a\na\nb\n' | uniq -u
    2 b
 --
    2 b
+   1 a
+--
+   2 b
+   2 c
    1 a
 --
 a
