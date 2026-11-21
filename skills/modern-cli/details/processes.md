@@ -109,7 +109,9 @@ the status with `wait PID`. A process ended by a signal has the status 128 plus 
 sleep 30 & P=$!; kill $P; wait $P; echo "status: $?"
 sleep 30 & P=$!; kill -KILL $P; wait $P; echo "status: $?"
 sleep 30 & P=$!; kill -HUP $P; wait $P; echo "status: $?"
-sleep 30 & P=$!; kill -INT $P; wait $P; echo "status: $?"
+sh -c 'kill -INT $$; sleep 30'; echo "status: $?"
+sleep 30 & P=$!; until [ "$(ps -o comm= -p $P)" = sleep ]; do sleep 0.05; done
+kill -INT $P; kill -0 $P && echo "INT ignored"; kill $P; wait $P; echo "status: $?"
 kill -l 143
 ```
 ```text
@@ -117,8 +119,15 @@ status: 143
 status: 137
 status: 129
 status: 130
+INT ignored
+status: 143
 TERM
 ```
+
+A command started with `&` in a script (a shell without job control) ignores INT and QUIT, as POSIX
+requires, so `kill -INT` does nothing to it once it runs; only a signal that arrives before the
+shell has set this up ends it, which is a race. The example therefore shows 130 with a foreground
+`sh` that sends INT to itself, and the background `sleep` still alive after INT.
 
 TERM asks the process to stop and it may catch the signal (here a `trap` runs a handler, which sets
 the status 3) or ignore it (`trap "" TERM`: the process is still alive). KILL (and STOP) cannot be

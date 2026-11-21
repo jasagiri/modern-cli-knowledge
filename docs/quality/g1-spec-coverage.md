@@ -12,9 +12,9 @@ Also from the IDs in the first cell of the table rows of
 
 | ID | test files (count) |
 |---|---|
-| MCLI-PAGE-01 | tests/test_examples.nim (1), tests/test_parse.nim (1) |
-| MCLI-PAGE-02 | tests/test_examples.nim (1) |
-| MCLI-PAGE-03 | tests/test_examples.nim (1), tests/test_parse.nim (6) |
+| MCLI-PAGE-01 | tests/test_examples.nim (1), tests/test_parse.nim (3) |
+| MCLI-PAGE-02 | tests/test_examples.nim (1), tests/test_parse.nim (2) |
+| MCLI-PAGE-03 | tests/test_examples.nim (1), tests/test_parse.nim (11) |
 | MCLI-PAGE-04 | tests/test_examples.nim (1) |
 | MCLI-PAGE-05 | tests/test_examples.nim (1) |
 | MCLI-EX-01 | tests/test_examples.nim (1) |
@@ -22,12 +22,12 @@ Also from the IDs in the first cell of the table rows of
 | MCLI-EX-03 | tests/test_examples.nim (1) |
 | MCLI-EX-04 | tests/test_examples.nim (1) |
 | MCLI-EX-05 | tests/test_examples.nim (1) |
-| MCLI-SPEC-01 | tests/test_dataset.nim (1), tests/test_parse.nim (3) |
-| MCLI-SPEC-02 | tests/test_spec.nim (9) |
-| MCLI-SPEC-03 | tests/test_spec.nim (2) |
+| MCLI-SPEC-01 | tests/test_dataset.nim (1), tests/test_parse.nim (4) |
+| MCLI-SPEC-02 | tests/test_spec.nim (18) |
+| MCLI-SPEC-03 | tests/test_spec.nim (4) |
 | MCLI-VER-01 | tests/test_versions.nim (1) |
 | MCLI-DATA-01 | tests/test_dataset.nim (2) |
-| MCLI-DATA-02 | tests/test_dataset.nim (4) |
+| MCLI-DATA-02 | tests/test_dataset.nim (7) |
 | MCLI-DATA-03 | tests/test_dataset.nim (1) |
 
 Declared: 17  Covered: 17  Uncovered: 0

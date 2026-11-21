@@ -99,6 +99,50 @@ suite "dataset":
     check recordsOf(mcliProfile, "find.md", page).len == 0
 
   # SPEC: MCLI-DATA-02
+  test "MCLI-DATA-02 Given a page marked 未検証 with a one-character reason, when derived, then it gives no record":
+    let page = verified.replace("# Find: tool\n", "# Find: tool\nStatus: 未検証 (x)\n")
+    check recordsOf(mcliProfile, "find.md", page).len == 0
+
+  # SPEC: MCLI-DATA-02
+  test "MCLI-DATA-02 Given a pitfall whose bad block is the first block of the page, when derived, then it is a pitfall record":
+    let page = """# Find: tool
+## Intent
+Why.
+## Classic and modern
+x
+## Commands
+```sh bad
+rg (
+```
+```sh
+# exit: 1
+rg -F (
+```
+```text
+```
+## Differences that change results
+- d
+## When to keep the classic command
+In scripts.
+## Pitfalls
+x
+## Sources
+None in the catalog: nothing.
+"""
+    var kinds: seq[string]
+    for r in recordsOf(mcliProfile, "find.md", page): kinds.add r.kind
+    check kinds == @["explain", "keep-classic", "pitfall"]
+
+  # SPEC: MCLI-DATA-02
+  test "MCLI-DATA-02 Given a pitfall with a one-character line of prose above its bad block, when derived, then the request carries it":
+    let page = verified.replace("Regex:\n```sh bad", "x\n```sh bad")
+    let rs = recordsOf(mcliProfile, "find.md", page)
+    check rs[^1].kind == "pitfall"
+    check rs[^1].instruction == mcliProfile.pitfallRequest & " (x)"
+    let bare = recordsOf(mcliProfile, "find.md", verified.replace("Regex:\n```sh bad", "```sh bad"))
+    check bare[^1].instruction == mcliProfile.pitfallRequest
+
+  # SPEC: MCLI-DATA-02
   test "MCLI-DATA-02 Given the committed dataset, when read, then no record comes from an unverified page":
     for line in readFile(root / "dataset" / "records.jsonl").splitLines:
       if line.len == 0: continue

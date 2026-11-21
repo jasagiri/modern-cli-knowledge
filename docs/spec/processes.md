@@ -14,7 +14,7 @@ One row per claim of the sections "Differences that change results" (D) and "Whe
 | CLI-PROCS-08 | K1 | Keep `ps` in scripts and one-liners where procs is not installed | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-PROCS-09 | K2 | Keep `ps -o pid=,comm= -p PID` when a fixed, parseable format is needed and `--json` is not an option | 本文のみ (助言: advice on when to choose, not a result) |
 | CLI-PROCS-10 | K3 | Keep `ps` when a column procs does not show is the point | 本文のみ (助言: advice on when to choose, not a result) |
-| CLI-PROCS-11 | D8 | `kill` sends TERM by default, and a process ended by a signal has the status 128 plus its number (TERM 143, KILL 137, HUP 129, INT 130) | 例 |
+| CLI-PROCS-11 | D8 | `kill` sends TERM by default, and a process ended by a signal has the status 128 plus its number (TERM 143, KILL 137, HUP 129, INT 130); a command started with `&` in a script ignores INT and QUIT | 例 |
 | CLI-PROCS-12 | D8 | TERM can be caught or ignored and KILL cannot | 例 |
 | CLI-PROCS-13 | D9 | `kill -0 PID` sends nothing and reports whether the process exists; `kill` of a finished process or an unknown signal name has status 1 | 例 |
 | CLI-PROCS-14 | D10 | `kill -l NUMBER` prints the name; `HUP` `INT` `QUIT` `ABRT` `KILL` `ALRM` `TERM` are fixed and `USR1` is 30 here | 例 |

@@ -97,3 +97,78 @@ suite "spec header":
       let ex = examplesOf(parsePage(page("```sh\n" & bad & "\nrg\n```\n```text\n```\n")), mcliProfile)
       check ex.errors.len == 1
       check ex.examples.len == 0
+
+suite "block shapes":
+  func lines(errs: seq[PageError]): seq[int] =
+    for e in errs: result.add e.line
+
+  # SPEC: MCLI-PAGE-03
+  test "MCLI-PAGE-03 Given fences with no info or another language, when paired, then they are ignored":
+    let p = parsePage(page("```\nplain\n```\n```json\n{}\n```\n```sh\nrg\n```\n```text\no\n```\n"))
+    check p.blocks[0].kind == bkOther
+    check p.blocks[1].kind == bkOther
+    let ex = examplesOf(p, mcliProfile)
+    check ex.errors.len == 0
+    check ex.examples.len == 1
+
+  # SPEC: MCLI-PAGE-01
+  test "MCLI-PAGE-01 Given a block above the first section or inside one, when parsed, then the section body holds its own lines only":
+    let early = parsePage("# T\n```sh\nrg\n```\n## A\n")
+    check early.blocks.len == 1
+    check early.sections.len == 1
+    check early.sections[0].body.strip == ""
+    let inside = parsePage("# T\n## A\nx\n```sh\nrg\n```\n")
+    check inside.sections[0].body.strip == "x\n```sh\nrg\n```"
+
+  # SPEC: MCLI-PAGE-01
+  test "MCLI-PAGE-01 Given several `# ` lines or prose above the title, when parsed, then the title is the first `# ` line":
+    check parsePage("# First\n# Second\n").title == "First"
+    check parsePage("prose\n# T\n").title == "T"
+
+  # SPEC: MCLI-SPEC-01
+  test "MCLI-SPEC-01 Given spec IDs that are not CLI-<TOOL>-NN with an upper-case or digit tool and two digits, when paired, then each is an error":
+    for bad in ["# spec: CLI--01", "# spec: CLI-rg-01", "# spec: CLI-RG-1a", "# spec: CLI-R!-01", "# spec: CLI-RG-01-02"]:
+      let ex = examplesOf(parsePage(page("```sh\n" & bad & "\nrg\n```\n```text\n```\n")), mcliProfile)
+      check ex.errors.len == 1
+    for good in ["# spec: CLI-Q-01", "# spec: CLI-R2-01"]:
+      let ex = examplesOf(parsePage(page("```sh\n" & good & "\nrg\n```\n```text\n```\n")), mcliProfile)
+      check ex.errors.len == 0
+
+  # SPEC: MCLI-PAGE-03
+  test "MCLI-PAGE-03 Given two exit lines in one command, when paired, then it is an error":
+    let ex = examplesOf(parsePage(page("```sh\n# exit: 1\n# exit: 1\nrg\n```\n```text\n```\n")), mcliProfile)
+    check ex.errors.len == 1
+    check ex.examples.len == 0
+
+  # SPEC: MCLI-PAGE-02
+  test "MCLI-PAGE-02 Given a page marked 未検証 with a one-character reason, when paired, then a runnable command is an error":
+    let ex = examplesOf(parsePage(page("```sh\nrg x\n```\n```text\n```\n", "x")), mcliProfile)
+    check ex.errors.len == 1
+
+  # SPEC: MCLI-PAGE-02
+  test "MCLI-PAGE-02 Given runnable commands of every pairing on a page marked 未検証, when paired, then each command is one error and its text is not another":
+    let blocks = "```sh\na\n```\n```text\no\n```\n" & "```sh\nb\n```\n" & "```sh\nc\n```\n```text\no\n```\n" & "```sh\nd\n```\n"
+    let ex = examplesOf(parsePage(page(blocks, "x")), mcliProfile)
+    # the page has one more line (the status) above the blocks: the commands open at 6, 12, 15, 21
+    check lines(ex.errors) == @[6, 12, 15, 21]
+
+  # SPEC: MCLI-PAGE-03
+  test "MCLI-PAGE-03 Given a classic or bad block and a command with no text at the end of the page, when paired, then it is an error naming the line":
+    for kind in ["classic", "bad"]:
+      let ex = examplesOf(parsePage(page("```sh " & kind & "\ngrep x\n```\n```sh\nrg x\n```\n")), mcliProfile)
+      check ex.errors.len == 2  # the pair is broken, then the command alone
+      check ex.errors[0].line == 5
+
+  # SPEC: MCLI-PAGE-03
+  test "MCLI-PAGE-03 Given a classic pair whose command has a malformed exit line, when paired, then the error names the command's line":
+    let ex = examplesOf(parsePage(page("```sh classic\ngrep x\n```\n```sh\n# exit: x\nrg x\n```\n```text\no\n```\n")), mcliProfile)
+    check ex.errors.len == 1
+    check ex.errors[0].line == 8
+    check ex.examples.len == 0
+
+  # SPEC: MCLI-PAGE-03
+  test "MCLI-PAGE-03 Given a classic pair, when its command is idempotent or not, then the example says so":
+    let idem = examplesOf(parsePage(page("```sh classic\ngrep x\n```\n```sh idempotent\nrg x\n```\n```text\no\n```\n")), mcliProfile)
+    check idem.examples[0].idempotent
+    let plain = examplesOf(parsePage(page("```sh classic\ngrep x\n```\n```sh\nrg x\n```\n```text\no\n```\n")), mcliProfile)
+    check not plain.examples[0].idempotent
