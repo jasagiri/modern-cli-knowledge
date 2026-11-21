@@ -122,14 +122,18 @@ TERM
 
 TERM asks the process to stop and it may catch the signal (here a `trap` runs a handler, which sets
 the status 3) or ignore it (`trap "" TERM`: the process is still alive). KILL (and STOP) cannot be
-caught or ignored, so `kill -KILL` is the last resort after TERM has failed:
+caught or ignored, so `kill -KILL` is the last resort after TERM has failed. Each child creates a
+file once its `trap` is set, and the parent waits for that file before it signals, because a signal
+that arrives before the `trap` runs gets the default action:
 
 ```sh
 # spec: CLI-PROCS-12
-sh -c 'sleep 30 & c=$!; trap "kill $c; echo got TERM; exit 3" TERM; wait $c' & P=$!
-sleep 1; kill $P; wait $P; echo "status: $?"
-sh -c 'trap "" TERM; sleep 2' & P=$!
-sleep 0.3; kill $P; kill -0 $P && echo still-alive
+sh -c 'sleep 30 & c=$!; trap "kill $c; echo got TERM; exit 3" TERM; : > ready1; wait $c' & P=$!
+until [ -e ready1 ]; do sleep 0.05; done
+kill $P; wait $P; echo "status: $?"
+sh -c 'trap "" TERM; : > ready2; sleep 2' & P=$!
+until [ -e ready2 ]; do sleep 0.05; done
+kill $P; kill -0 $P && echo still-alive
 kill -KILL $P; wait $P; echo "status: $?"
 ```
 ```text
@@ -186,12 +190,20 @@ wait: 0
 ```
 
 STOP freezes a process and CONT resumes it. A stopped process has the state `T` in the `STAT` column
-of `ps`:
+of `ps`. `$!` is known as soon as the shell has forked, before the child has become `sleep`; measured
+here, a STOP sent in that moment sometimes left the process running (`S`). The example waits until
+the process is `sleep`, and reads the state again for up to a second, since a signal is delivered
+after `kill` returns:
 
 ```sh
 # spec: CLI-PROCS-16
 sleep 30 & P=$!
-kill -STOP $P; ps -o stat= -p $P | cut -c1
+until [ "$(ps -o comm= -p $P)" = sleep ]; do sleep 0.05; done
+kill -STOP $P
+for i in 1 2 3 4 5 6 7 8 9 10; do
+  s=$(ps -o stat= -p $P | cut -c1); [ "$s" = T ] && break; sleep 0.1
+done
+echo "$s"
 kill -CONT $P; kill $P; wait $P; echo "status: $?"
 ```
 ```text
