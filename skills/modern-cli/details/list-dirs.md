@@ -305,5 +305,5 @@ src
 ## Sources
 
 - `aed4c5853a286846` eza
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `e372d8114adfc35f` The Linux Command Line
+- `5fcf61afb6b336b9` GNU Coreutils manual
+- `9847b24a1da661bb` tree(1), Ubuntu 24.04 manual page

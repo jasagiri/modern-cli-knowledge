@@ -11,12 +11,12 @@ is run against a fixed file tree and its output compared byte for byte.
 | `skills/modern-cli/SKILL.md`, `details/` | the agent skill (Agent Skills format), one page per task |
 | `fixtures/tree/` | the file tree every example runs in (`_gitignore` becomes `.gitignore` in the copy) |
 | `docs/tool-versions.md` | the tool versions the examples were checked with |
-| `catalog/` | the sources: free-programming-books sections on the shell and Unix, and the tools' manuals; built by `../free-books-catalog` from `catalog/config.json` |
+| `catalog/` | the sources: the tools' own documentation and the classic commands' manuals, only those whose licences allow commercial use (`docs/sources.md`); built by `../free-books-catalog` from `catalog/config.json` |
 | `dataset/` | `records.jsonl` and `chat.jsonl`, generated from the pages |
 | `src/mcli/` | page parser, example runner, dataset derivation |
 | `tools/` | `try_command` (run one command as the tests do), `dataset_build` |
 | `docs/spec/` | one table per page: its claims (ID `CLI-<TOOL>-NN`) and the examples that confirm them |
-| `docs/adr/` | why: sources (0001), examples run and compared (0002), dataset (0003) |
+| `docs/adr/` | why: sources (0001), examples run and compared (0002), dataset (0003), only commercially usable sources (0004) |
 
 ## Using the skill
 
@@ -45,8 +45,16 @@ bin/try_command 'rg -l --sort path TODO'   # one command, run as the tests run i
 
 # refreshing the sources (network; one request per host at a time, robots.txt honoured)
 nim c -d:ssl -d:release -o:bin/catalog_fetch ../free-books-catalog/tools/catalog_fetch.nim
-bin/catalog_fetch fpb   # then: expand, reach (reads catalog/config.json)
+bin/catalog_fetch reach   # reads catalog/config.json
 ```
 
 The fetched pages live outside the repository: `$MCLI_RAW`, by default
 `~/.cache/modern-cli-knowledge/raw`.
+
+## Licence
+
+Apache License 2.0 (`LICENSE`, `NOTICE`): the pages, examples, dataset, code and tests may be used,
+changed and built into other systems, commercial ones included. The repository copies no text from
+other works; the sources it lists are the tools' documentation and manuals, each under licences that
+allow commercial use (`docs/sources.md`), and a test fails if one that does not enters the catalog
+(MCLI-SRC-01).

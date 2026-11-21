@@ -46,3 +46,10 @@ of the Hillside catalog (`"hillside": false`). Fetched pages stay in the cache
 ## Rejected alternatives
 
 Options 1 and 2 above.
+
+## 訂正 (2026-11-22)
+
+- The catalog no longer holds free-programming-books or any source whose licence does not allow
+  commercial use; see ADR-MCLI-0004. Option 3 above describes the catalog as it was built before.
+- "Not decided here": the classic tools are now cited through the GNU manuals and the Ubuntu 24.04
+  manual pages (ADR-MCLI-0004).

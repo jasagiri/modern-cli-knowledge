@@ -188,4 +188,4 @@ xh --offline --ignore-stdin -p B POST example.org name=x | head -1
 ## Sources
 
 - `2e7ca995f972a659` xh
-- `0fcd5e4bf264865c` Data Science at the Command Line
+- `327552a164545fd5` curl(1), Ubuntu 24.04 manual page

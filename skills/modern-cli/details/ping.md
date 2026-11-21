@@ -132,4 +132,4 @@ ping -c 1 -q 127.0.0.1 | grep -c 'packets transmitted'
 ## Sources
 
 - `2b368f6cc6199a66` gping
-- `e372d8114adfc35f` The Linux Command Line
+- `e03dc24f71cd5825` ping(8), Ubuntu 24.04 manual page

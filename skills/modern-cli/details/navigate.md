@@ -187,4 +187,4 @@ app/lib
 ## Sources
 
 - `b96090a5ddb86b38` zoxide
-- `e2b344d7c00bdbf6` GNU Bash manual
+- `b24f2dbb9d888e27` GNU Bash manual

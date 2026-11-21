@@ -104,4 +104,5 @@ top -l 1 -n 1 | grep -c "^Processes:"
 ## Sources
 
 - `d5113d31cfbb193d` btop
-- `e372d8114adfc35f` The Linux Command Line
+- `64d1c3104a67edc8` top(1), Ubuntu 24.04 manual page
+- `d7ddeb9998e40525` iostat(1), Ubuntu 24.04 manual page

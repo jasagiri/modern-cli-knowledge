@@ -44,3 +44,10 @@ statements (what each tool does on the fixture) are in `docs/spec/*.md`.
 | MCLI-DATA-01 | Rebuilding dataset/ from the pages gives the committed bytes. |
 | MCLI-DATA-02 | Every record comes from a verified example (`task`, `rewrite`, `pitfall`) or a page section (`explain`, `keep-classic`); no record comes from a ```sh unverified block. |
 | MCLI-DATA-03 | chat.jsonl holds the same records as records.jsonl, one system/user/assistant triple each, in the same order. |
+
+## Sources (ADR-MCLI-0004)
+
+| ID | Statement |
+|---|---|
+| MCLI-SRC-01 | Every source in catalog/sources.jsonl states at least one licence, and each is one of `commercialLicenses` in free-books-catalog (src/free_books_catalog/licences.nim: licences that allow use, copying, modification and distribution for any purpose, commercial use included). |
+| MCLI-SRC-02 | catalog/config.json switches free-programming-books (`fpb`) and Hillside off and `commercialOnly` on, so the catalog holds exactly the sources it lists and catalog_build refuses a source whose licences are not on the list. |

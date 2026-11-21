@@ -214,4 +214,3 @@ yq -i '.ports = (.ports + [9090] | unique)' config/app.yaml && yq -o=json -I=0 '
 ## Sources
 
 - `f1aadf3f99260746` yq documentation
-- `0fcd5e4bf264865c` Data Science at the Command Line

@@ -246,4 +246,5 @@ drwx------
 
 ## Sources
 
-None in the catalog: to be cited by the lead.
+- `5fcf61afb6b336b9` GNU Coreutils manual
+- `b24f2dbb9d888e27` GNU Bash manual

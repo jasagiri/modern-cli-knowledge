@@ -205,4 +205,3 @@ Carol
 ## Sources
 
 - `40610646b614d8d6` jq manual
-- `0fcd5e4bf264865c` Data Science at the Command Line

@@ -267,6 +267,5 @@ notes/日本語.txt:1
 - `2dd384575394f4b1` ripgrep user guide
 - `d917c9834bea2bed` sd
 - `40610646b614d8d6` jq manual
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `07c024119cc4d6ce` The Art of Unix Programming
-- `0fcd5e4bf264865c` Data Science at the Command Line
+- `95006c1c8e56e8ac` GNU findutils manual
+- `b24f2dbb9d888e27` GNU Bash manual

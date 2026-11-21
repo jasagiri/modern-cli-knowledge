@@ -1,226 +1,465 @@
 {
- "userAgent": "modern-cli-knowledge-catalog/0.1 (catalog of free programming books; one request per host at a time)",
- "rawEnv": "MCLI_RAW",
- "rawDefault": "~/.cache/modern-cli-knowledge/raw",
- "fpbCommit": "10e33dd516cc53864e6bece7e6bd51f2a035d06c",
- "hillside": false,
- "fpb": true,
-  "commercialOnly": false,
- "triage": {
-  "sectionKeywords": [
-   "bash",
-   "shell",
-   "unix",
-   "linux",
-   "command line",
-   "awk",
-   "sed",
-   "regular expression",
-   "terminal"
-  ],
-  "titleKeywords": [
-   "command line",
-   "shell",
-   "bash",
-   "unix",
-   "linux",
-   "awk",
-   "sed",
-   "grep",
-   "regular expression",
-   "terminal"
-  ],
-  "depth2TitleKeywords": [],
-  "outFiles": [
-   "casts/",
-   "free-programming-playgrounds"
-  ],
-  "hillsideCore": false
- },
- "listed": [
-  {
-   "url": "https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md",
-   "title": "ripgrep user guide",
-   "section": [
-    "Tool manuals",
-    "rg"
-   ]
+  "userAgent": "modern-cli-knowledge-catalog/0.1 (catalog of free tool manuals; one request per host at a time)",
+  "rawEnv": "MCLI_RAW",
+  "rawDefault": "~/.cache/modern-cli-knowledge/raw",
+  "fpbCommit": "",
+  "hillside": false,
+  "fpb": false,
+  "commercialOnly": true,
+  "triage": {
+    "sectionKeywords": [],
+    "titleKeywords": [],
+    "depth2TitleKeywords": [],
+    "outFiles": [
+      "casts/",
+      "free-programming-playgrounds"
+    ],
+    "hillsideCore": false
   },
-  {
-   "url": "https://github.com/sharkdp/fd",
-   "title": "fd",
-   "section": [
-    "Tool manuals",
-    "fd"
-   ]
-  },
-  {
-   "url": "https://github.com/chmln/sd",
-   "title": "sd",
-   "section": [
-    "Tool manuals",
-    "sd"
-   ]
-  },
-  {
-   "url": "https://github.com/sharkdp/bat",
-   "title": "bat",
-   "section": [
-    "Tool manuals",
-    "bat"
-   ]
-  },
-  {
-   "url": "https://github.com/eza-community/eza",
-   "title": "eza",
-   "section": [
-    "Tool manuals",
-    "eza"
-   ]
-  },
-  {
-   "url": "https://jqlang.org/manual/",
-   "title": "jq manual",
-   "section": [
-    "Tool manuals",
-    "jq"
-   ]
-  },
-  {
-   "url": "https://mikefarah.gitbook.io/yq/",
-   "title": "yq documentation",
-   "section": [
-    "Tool manuals",
-    "yq"
-   ]
-  },
-  {
-   "url": "https://github.com/dandavison/delta",
-   "title": "delta",
-   "section": [
-    "Tool manuals",
-    "delta"
-   ]
-  },
-  {
-   "url": "https://github.com/sharkdp/hyperfine",
-   "title": "hyperfine",
-   "section": [
-    "Tool manuals",
-    "hyperfine"
-   ]
-  },
-  {
-   "url": "https://github.com/bootandy/dust",
-   "title": "dust",
-   "section": [
-    "Tool manuals",
-    "dust"
-   ]
-  },
-  {
-   "url": "https://github.com/dalance/procs",
-   "title": "procs",
-   "section": [
-    "Tool manuals",
-    "procs"
-   ]
-  },
-  {
-   "url": "https://github.com/ducaale/xh",
-   "title": "xh",
-   "section": [
-    "Tool manuals",
-    "xh"
-   ]
-  },
-  {
-   "url": "https://github.com/junegunn/fzf",
-   "title": "fzf",
-   "section": [
-    "Tool manuals",
-    "fzf"
-   ]
-  },
-  {
-   "url": "https://github.com/ajeetdsouza/zoxide",
-   "title": "zoxide",
-   "section": [
-    "Tool manuals",
-    "zoxide"
-   ]
-  },
-  {
-   "url": "https://github.com/tldr-pages/tldr",
-   "title": "tldr-pages",
-   "section": [
-    "Tool manuals",
-    "tldr"
-   ]
-  },
-  {
-   "url": "https://github.com/aristocratos/btop",
-   "title": "btop",
-   "section": [
-    "Tool manuals",
-    "btop"
-   ]
-  },
-  {
-   "url": "https://github.com/muesli/duf",
-   "title": "duf",
-   "section": [
-    "Tool manuals",
-    "duf"
-   ]
-  },
-  {
-   "url": "https://github.com/orf/gping",
-   "title": "gping",
-   "section": [
-    "Tool manuals",
-    "gping"
-   ]
-  },
-  {
-   "url": "https://github.com/jj-vcs/jj",
-   "title": "Jujutsu (jj)",
-   "section": [
-    "Tool manuals",
-    "jj"
-   ]
-  },
-  {
-   "url": "https://pubs.opengroup.org/onlinepubs/9799919799/idx/utilities.html",
-   "title": "POSIX.1-2024 Shell and Utilities: utilities",
-   "section": [
-    "Classic manuals",
-    "POSIX"
-   ]
-  },
-  {
-   "url": "https://www.gnu.org/software/grep/manual/",
-   "title": "GNU grep manual",
-   "section": [
-    "Classic manuals",
-    "grep"
-   ]
-  },
-  {
-   "url": "https://www.gnu.org/software/sed/manual/",
-   "title": "GNU sed manual",
-   "section": [
-    "Classic manuals",
-    "sed"
-   ]
-  },
-  {
-   "url": "https://www.gnu.org/software/findutils/manual/find.html",
-   "title": "GNU findutils manual",
-   "section": [
-    "Classic manuals",
-    "find"
-   ]
-  }
- ]
+  "listed": [
+    {
+      "url": "https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md",
+      "title": "ripgrep user guide",
+      "section": [
+        "Tool manuals",
+        "rg"
+      ],
+      "licenses": [
+        "Unlicense",
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/sharkdp/fd",
+      "title": "fd",
+      "section": [
+        "Tool manuals",
+        "fd"
+      ],
+      "licenses": [
+        "MIT",
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://github.com/chmln/sd",
+      "title": "sd",
+      "section": [
+        "Tool manuals",
+        "sd"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/sharkdp/bat",
+      "title": "bat",
+      "section": [
+        "Tool manuals",
+        "bat"
+      ],
+      "licenses": [
+        "MIT",
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://github.com/eza-community/eza",
+      "title": "eza",
+      "section": [
+        "Tool manuals",
+        "eza"
+      ],
+      "licenses": [
+        "EUPL-1.2"
+      ]
+    },
+    {
+      "url": "https://jqlang.org/manual/",
+      "title": "jq manual",
+      "section": [
+        "Tool manuals",
+        "jq"
+      ],
+      "licenses": [
+        "CC-BY-3.0"
+      ]
+    },
+    {
+      "url": "https://mikefarah.gitbook.io/yq/",
+      "title": "yq documentation",
+      "section": [
+        "Tool manuals",
+        "yq"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/dandavison/delta",
+      "title": "delta",
+      "section": [
+        "Tool manuals",
+        "delta"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/sharkdp/hyperfine",
+      "title": "hyperfine",
+      "section": [
+        "Tool manuals",
+        "hyperfine"
+      ],
+      "licenses": [
+        "MIT",
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://github.com/bootandy/dust",
+      "title": "dust",
+      "section": [
+        "Tool manuals",
+        "dust"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://github.com/dalance/procs",
+      "title": "procs",
+      "section": [
+        "Tool manuals",
+        "procs"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/ducaale/xh",
+      "title": "xh",
+      "section": [
+        "Tool manuals",
+        "xh"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/junegunn/fzf",
+      "title": "fzf",
+      "section": [
+        "Tool manuals",
+        "fzf"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/ajeetdsouza/zoxide",
+      "title": "zoxide",
+      "section": [
+        "Tool manuals",
+        "zoxide"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/tldr-pages/tldr",
+      "title": "tldr-pages",
+      "section": [
+        "Tool manuals",
+        "tldr"
+      ],
+      "licenses": [
+        "CC-BY-4.0"
+      ]
+    },
+    {
+      "url": "https://github.com/aristocratos/btop",
+      "title": "btop",
+      "section": [
+        "Tool manuals",
+        "btop"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://github.com/muesli/duf",
+      "title": "duf",
+      "section": [
+        "Tool manuals",
+        "duf"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/orf/gping",
+      "title": "gping",
+      "section": [
+        "Tool manuals",
+        "gping"
+      ],
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "url": "https://github.com/jj-vcs/jj",
+      "title": "Jujutsu (jj)",
+      "section": [
+        "Tool manuals",
+        "jj"
+      ],
+      "licenses": [
+        "Apache-2.0"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/grep/manual/",
+      "title": "GNU grep manual",
+      "section": [
+        "Classic manuals",
+        "grep"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/sed/manual/",
+      "title": "GNU sed manual",
+      "section": [
+        "Classic manuals",
+        "sed"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/findutils/manual/find.html",
+      "title": "GNU findutils manual",
+      "section": [
+        "Classic manuals",
+        "find"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/bash/manual/",
+      "title": "GNU Bash manual",
+      "section": [
+        "Classic manuals",
+        "bash"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/coreutils/manual/",
+      "title": "GNU Coreutils manual",
+      "section": [
+        "Classic manuals",
+        "coreutils"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://www.gnu.org/software/diffutils/manual/",
+      "title": "GNU Diffutils manual",
+      "section": [
+        "Classic manuals",
+        "diff"
+      ],
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later"
+      ]
+    },
+    {
+      "url": "https://git-scm.com/docs",
+      "title": "Git reference manual",
+      "section": [
+        "Classic manuals",
+        "git"
+      ],
+      "licenses": [
+        "GPL-2.0-only"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/tar.1.html",
+      "title": "tar(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "tar"
+      ],
+      "licenses": [
+        "GPL-3.0-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/mawk.1.html",
+      "title": "mawk(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "awk"
+      ],
+      "licenses": [
+        "GPL-2.0-only"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/ssh.1.html",
+      "title": "ssh(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "ssh"
+      ],
+      "licenses": [
+        "SSH-OpenSSH"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/scp.1.html",
+      "title": "scp(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "scp"
+      ],
+      "licenses": [
+        "SSH-OpenSSH"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/ssh-keygen.1.html",
+      "title": "ssh-keygen(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "ssh-keygen"
+      ],
+      "licenses": [
+        "SSH-OpenSSH"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/apropos.1.html",
+      "title": "apropos(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "apropos"
+      ],
+      "licenses": [
+        "GPL-2.0-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/top.1.html",
+      "title": "top(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "top"
+      ],
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/ps.1.html",
+      "title": "ps(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "ps"
+      ],
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/kill.1.html",
+      "title": "kill(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "kill"
+      ],
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/iostat.1.html",
+      "title": "iostat(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "iostat"
+      ],
+      "licenses": [
+        "GPL-2.0-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man8/ping.8.html",
+      "title": "ping(8), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "ping"
+      ],
+      "licenses": [
+        "BSD-3-Clause"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/tree.1.html",
+      "title": "tree(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "tree"
+      ],
+      "licenses": [
+        "GPL-2.0-or-later"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/curl.1.html",
+      "title": "curl(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "curl"
+      ],
+      "licenses": [
+        "curl"
+      ]
+    },
+    {
+      "url": "https://manpages.ubuntu.com/manpages/noble/man1/less.1.html",
+      "title": "less(1), Ubuntu 24.04 manual page",
+      "section": [
+        "Classic manuals",
+        "less"
+      ],
+      "licenses": [
+        "GPL-3.0-or-later"
+      ]
+    }
+  ]
 }

@@ -274,4 +274,4 @@ status: 2
 ## Sources
 
 - `c0e9beb59305b739` delta
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
+- `062c5254a1f6a0c5` GNU Diffutils manual

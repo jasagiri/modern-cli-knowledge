@@ -173,4 +173,4 @@ status: 1
 ## Sources
 
 - `8453006a26292241` hyperfine
-- `e2b344d7c00bdbf6` GNU Bash manual
+- `b24f2dbb9d888e27` GNU Bash manual

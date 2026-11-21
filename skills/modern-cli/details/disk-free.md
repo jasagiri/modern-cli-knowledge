@@ -114,4 +114,4 @@ lstat -only: no such file or directory
 ## Sources
 
 - `137001351adaa63a` duf
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
+- `5fcf61afb6b336b9` GNU Coreutils manual

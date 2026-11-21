@@ -263,5 +263,3 @@ src/util.nim
 
 - `1b998e95b8fb679f` fd
 - `95006c1c8e56e8ac` GNU findutils manual
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `e372d8114adfc35f` The Linux Command Line

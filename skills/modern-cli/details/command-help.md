@@ -105,4 +105,4 @@ a Markdown file that is not a page shows the lines before the broken one, then s
 ## Sources
 
 - `28aedb413b85f86f` tldr-pages
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
+- `0a013e0613e1a4d9` apropos(1), Ubuntu 24.04 manual page

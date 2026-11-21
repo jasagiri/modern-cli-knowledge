@@ -389,4 +389,5 @@ printf 'b\na\nb\n' | sort | uniq -c
 
 ## Sources
 
-None in the catalog: to be cited by the lead.
+- `5fcf61afb6b336b9` GNU Coreutils manual
+- `8738f99abe2e68cb` mawk(1), Ubuntu 24.04 manual page

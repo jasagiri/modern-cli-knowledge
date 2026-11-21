@@ -1,11 +1,9 @@
 modern-cli-knowledge
 Copyright 2026 jasagiri
 
-catalog/sources.jsonl lists titles and URLs taken from free-programming-books
-(https://github.com/EbookFoundation/free-programming-books), licensed CC BY 4.0
-(https://creativecommons.org/licenses/by/4.0/), and the official documentation of the tools
-listed in catalog/config.json. Only those facts (title, URL, section, stated licence) are
-reproduced; the commit and fetch date are in catalog/meta.json.
+catalog/sources.jsonl lists the documentation of the tools named in catalog/config.json: titles,
+URLs and the licences each states (docs/sources.md). Only those facts are reproduced; the fetch
+date is in catalog/meta.json.
 
 No text or code was copied from the books, manuals and pages the catalog lists. Every explanation
 and every example under skills/ and dataset/ was written for this repository and checked by

@@ -536,4 +536,4 @@ A new.txt
 ## Sources
 
 - `d3e08a7505856df3` Jujutsu (jj)
-- `e52e6b835f6d8607` Pro Git
+- `29a03b0ba2b0ed69` Git reference manual

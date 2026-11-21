@@ -208,4 +208,6 @@ port 2222
 
 ## Sources
 
-None in the catalog: to be cited by the lead.
+- `7875e4c6a7743127` ssh(1), Ubuntu 24.04 manual page
+- `8925b62002c66cbf` scp(1), Ubuntu 24.04 manual page
+- `dc3b74a1467cedb1` ssh-keygen(1), Ubuntu 24.04 manual page

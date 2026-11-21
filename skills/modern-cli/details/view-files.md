@@ -195,5 +195,5 @@ proc unused() = discard  # TODO: remove
 ## Sources
 
 - `0236c1696550e790` bat
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `e372d8114adfc35f` The Linux Command Line
+- `5fcf61afb6b336b9` GNU Coreutils manual
+- `472fbb15a665bcfc` less(1), Ubuntu 24.04 manual page

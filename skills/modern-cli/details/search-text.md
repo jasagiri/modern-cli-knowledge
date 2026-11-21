@@ -241,6 +241,3 @@ rg -n -F 'greet(' src/main.nim
 
 - `2dd384575394f4b1` ripgrep user guide
 - `96b00026b5d224fd` GNU grep manual
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `01551884d3377e93` Regular Expressions for Regular Folk
-- `e372d8114adfc35f` The Linux Command Line

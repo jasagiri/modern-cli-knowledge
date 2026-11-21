@@ -223,5 +223,4 @@ dust -s -b -P --skip-total -d 1 notes
 ## Sources
 
 - `4c9c6183d8fb405c` dust
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `e372d8114adfc35f` The Linux Command Line
+- `5fcf61afb6b336b9` GNU Coreutils manual

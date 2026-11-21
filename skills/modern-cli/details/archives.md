@@ -223,4 +223,4 @@ todo.txt
 
 ## Sources
 
-None in the catalog: to be cited by the lead.
+- `e3baeb3cde5e4420` tar(1), Ubuntu 24.04 manual page

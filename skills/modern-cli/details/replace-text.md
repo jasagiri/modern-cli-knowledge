@@ -244,5 +244,3 @@ A tiny tree for the examples. DONE: write docs.
 
 - `d917c9834bea2bed` sd
 - `6f5694b2556b9b45` GNU sed manual
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
-- `01551884d3377e93` Regular Expressions for Regular Folk

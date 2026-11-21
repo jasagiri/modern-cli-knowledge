@@ -300,4 +300,5 @@ sleep 4711
 ## Sources
 
 - `88c4d3aa0d62e881` procs
-- `74e831fd938988b8` POSIX.1-2024 Shell and Utilities: utilities
+- `4f61d74acb5a7b68` ps(1), Ubuntu 24.04 manual page
+- `4de31f990f4be327` kill(1), Ubuntu 24.04 manual page

@@ -264,4 +264,4 @@ build
 
 ## Sources
 
-None in the catalog: to be cited by the lead.
+- `5fcf61afb6b336b9` GNU Coreutils manual
