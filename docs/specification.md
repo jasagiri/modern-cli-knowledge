@@ -9,7 +9,7 @@ statements (what each tool does on the fixture) are in `docs/spec/*.md`.
 |---|---|
 | MCLI-PAGE-01 | Every details page has a `# ` title and the sections Intent, Classic and modern, Commands, Differences that change results, When to keep the classic command, Pitfalls, Sources, in that order. |
 | MCLI-PAGE-02 | A page whose examples cannot be run here carries `Status: 未検証 (<reason>)` under its title and has only ```sh unverified commands; a verified page has no ```sh unverified block. |
-| MCLI-PAGE-03 | Blocks pair as the rules of `src/shell_pages/pages.nim` in nim-shell-pages say: ```sh then ```text; ```sh classic or ```sh bad then ```sh then ```text; a ```text after nothing to run, or a malformed `# exit: N`, or a second `# exit:` line in one command, is an error naming its line. |
+| MCLI-PAGE-03 | Blocks pair as the rules of `src/shell_pages/pages.nim` in nim-shell-pages say: ```sh then ```text; ```sh classic or ```sh bad then ```sh then ```text; a ```text after nothing to run, or a malformed `# exit: N` (N is 1 to 3 decimal digits and at most 255, so `# exit: 0001` and `# exit: 256` are malformed), or a second `# exit:` line in one command, is an error naming its line. |
 | MCLI-PAGE-04 | SKILL.md links every details page, and every page it links exists. |
 | MCLI-PAGE-05 | The Sources section of each page lists catalog IDs that exist in catalog/sources.jsonl, or says "None in the catalog:" with a reason. |
 

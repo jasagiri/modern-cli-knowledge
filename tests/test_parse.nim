@@ -38,7 +38,8 @@ suite "pairing":
   # SPEC: MCLI-PAGE-03
   test "MCLI-PAGE-03 Given an exit line, when paired, then the example expects that status; a malformed one is an error":
     check examplesOf(parsePage(page("```sh\n# exit: 1\nrg NOPE\n```\n```text\n```\n")), mcliProfile).examples[0].exitCode == 1
-    for bad in ["# exit: x", "# exit: 256", "# exit:", "# exit: 1234"]:
+    check examplesOf(parsePage(page("```sh\n# exit: 007\nrg NOPE\n```\n```text\n```\n")), mcliProfile).examples[0].exitCode == 7
+    for bad in ["# exit: x", "# exit: 256", "# exit:", "# exit: 1234", "# exit: 0001"]:
       let ex = examplesOf(parsePage(page("```sh\n" & bad & "\nrg\n```\n```text\n```\n")), mcliProfile)
       check ex.errors.len == 1
       check ex.examples.len == 0
