@@ -302,3 +302,5 @@ sleep 4711
 - `88c4d3aa0d62e881` procs
 - `4f61d74acb5a7b68` ps(1), Ubuntu 24.04 manual page
 - `4de31f990f4be327` kill(1), Ubuntu 24.04 manual page
+- `b24f2dbb9d888e27` GNU Bash manual
+- `ce8edcfa2458c888` Signal (IPC) (Wikipedia)

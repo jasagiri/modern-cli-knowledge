@@ -15,7 +15,8 @@ empty, and where BSD (macOS) differs from GNU.
 ## Commands
 
 All examples run in a throwaway copy of the fixture tree. `cp -R` copies a directory with its
-contents (`-r` is accepted but `-R` is the POSIX flag). Whether the source ends in a slash and
+contents (`-r` is accepted too, but the GNU manual warns that `-r` is not portable for symbolic
+links and special files, so use `-R`). Whether the source ends in a slash and
 whether the target exists decide where the files land. BSD `cp -R s/ t` copies the contents of `s`
 into `t`, and `cp -R s e` with an existing `e` creates `e/s`:
 

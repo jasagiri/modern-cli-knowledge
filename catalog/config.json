@@ -460,6 +460,17 @@
       "licenses": [
         "GPL-3.0-or-later"
       ]
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Signal_(IPC)",
+      "title": "Signal (IPC) (Wikipedia)",
+      "section": [
+        "Classic manuals",
+        "signals"
+      ],
+      "licenses": [
+        "CC-BY-SA-4.0"
+      ]
     }
   ]
 }

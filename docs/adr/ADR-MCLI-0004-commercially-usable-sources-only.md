@@ -63,3 +63,12 @@ A.
 ## Rejected alternatives
 
 B and C, for the reasons under Trade-offs.
+
+## 訂正 (2026-11-22)
+
+- The pages' statements about POSIX were checked against the listed sources. The GNU findutils
+  manual already supports those in combine.md (`-exec ... +` in POSIX, `-print0` and `xargs -0`
+  from Issue 8). processes.md now also cites the GNU Bash manual (asynchronous commands ignore INT
+  and QUIT without job control) and the Wikipedia article on signals (the portable signal
+  numbers); file-operations.md now says what the GNU Coreutils manual says about `cp -r`. The
+  catalog lists 41 sources.

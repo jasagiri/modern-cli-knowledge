@@ -4,12 +4,12 @@
   "depthLimit": 2,
   "maxLinksPerExpansion": 2000,
   "counts": {
-    "sources": 40,
-    "relevance.core": 40,
+    "sources": 41,
+    "relevance.core": 41,
     "relevance.adjacent": 0,
     "relevance.out": 0,
-    "listings.depth1": 40,
-    "reach.ok": 40
+    "listings.depth1": 41,
+    "reach.ok": 41
   },
   "notFollowed": []
 }

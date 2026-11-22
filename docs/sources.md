@@ -1,14 +1,15 @@
 # Sources and their licences
 
-The catalog holds only these 40 sources (ADR-MCLI-0004): each modern tool's own documentation,
-and for the classic commands the GNU manuals, the Git reference manual and the Ubuntu 24.04 manual
-pages at manpages.ubuntu.com. Their licences were read on 2026-11-22 and are written as SPDX
+The catalog holds only these 41 sources (ADR-MCLI-0004): each modern tool's own documentation,
+and for the classic commands the GNU manuals, the Git reference manual, the Ubuntu 24.04 manual
+pages at manpages.ubuntu.com and one Wikipedia article (on signals). Their licences were read on 2026-11-22 and are written as SPDX
 identifiers in `catalog/config.json`:
 
 - a tool's repository: the licence files at its root (a dual licence lists both);
 - jq: the notice on the manual (code MIT, documentation CC BY 3.0);
 - the GNU manuals: the permission notice in each manual (GFDL 1.3 or later, no invariant sections);
 - the Git manual: the project's COPYING (GPL version 2 only);
+- Wikipedia: the notice at the foot of the article (CC BY-SA 4.0);
 - an Ubuntu manual page: the `Files: *` stanza of its package's Debian copyright file, which covers
   the manual page (less is "GPL-3+ or Less"; the GPL is the one listed).
 
@@ -51,6 +52,7 @@ here, not copied from them.
 | [ripgrep user guide](https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md) | `2dd384575394f4b1` | Unlicense, MIT |
 | [scp(1), Ubuntu 24.04 manual page](https://manpages.ubuntu.com/manpages/noble/man1/scp.1.html) | `8925b62002c66cbf` | SSH-OpenSSH |
 | [sd](https://github.com/chmln/sd) | `d917c9834bea2bed` | MIT |
+| [Signal (IPC) (Wikipedia)](https://en.wikipedia.org/wiki/Signal_(IPC)) | `ce8edcfa2458c888` | CC-BY-SA-4.0 |
 | [ssh(1), Ubuntu 24.04 manual page](https://manpages.ubuntu.com/manpages/noble/man1/ssh.1.html) | `7875e4c6a7743127` | SSH-OpenSSH |
 | [ssh-keygen(1), Ubuntu 24.04 manual page](https://manpages.ubuntu.com/manpages/noble/man1/ssh-keygen.1.html) | `dc3b74a1467cedb1` | SSH-OpenSSH |
 | [tar(1), Ubuntu 24.04 manual page](https://manpages.ubuntu.com/manpages/noble/man1/tar.1.html) | `e3baeb3cde5e4420` | GPL-3.0-or-later |
